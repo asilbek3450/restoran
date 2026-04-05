@@ -1,0 +1,505 @@
+{% extends 'base.html' %}
+{% block title %}Savat — Lazzat Restaurant{% endblock %}
+
+{% block extra_css %}
+<style>
+  .cart-section {
+    max-width: 1000px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+  }
+
+  .cart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--cream2);
+  }
+
+  .cart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+
+  .cart-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Cart items */
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cart-item {
+    background: white;
+    border-radius: 18px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
+    transition: var(--spring);
+    border: 2px solid transparent;
+    animation: itemIn .5s cubic-bezier(.34, 1.56, .64, 1) both;
+  }
+
+  @keyframes itemIn {
+    from {
+      opacity: 0;
+      transform: translateX(-30px) scale(.95)
+    }
+
+    to {
+      opacity: 1;
+      transform: none
+    }
+  }
+
+  .cart-item:hover {
+    transform: translateX(4px);
+    border-color: rgba(201, 168, 76, .25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .1);
+  }
+
+  .cart-item-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+    transition: var(--spring);
+  }
+
+  .cart-item:hover .cart-item-img {
+    transform: scale(1.05) rotate(2deg);
+  }
+
+  .cart-item-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    background: var(--cream2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    transition: var(--spring);
+  }
+
+  .cart-item:hover .cart-item-placeholder {
+    transform: scale(1.05) rotate(5deg);
+  }
+
+  .cart-item-info {
+    flex: 1;
+  }
+
+  .cart-item-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--dark);
+    margin-bottom: .2rem;
+  }
+
+  .cart-item-cat {
+    font-size: .78rem;
+    color: var(--muted);
+  }
+
+  .cart-item-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .6rem;
+  }
+
+  .cart-item-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .qty-tag {
+    background: var(--cream2);
+    padding: .3rem .85rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: .88rem;
+    color: var(--text);
+  }
+
+  .remove-btn {
+    background: #fff1f0;
+    color: var(--red);
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--spring);
+    text-decoration: none;
+  }
+
+  .remove-btn:hover {
+    background: var(--red);
+    color: white;
+    transform: scale(1.1) rotate(10deg);
+  }
+
+  /* Summary */
+  .cart-summary {
+    background: white;
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 96px;
+    animation: summaryIn .6s cubic-bezier(.34, 1.56, .64, 1) .3s both;
+  }
+
+  @keyframes summaryIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px)
+    }
+
+    to {
+      opacity: 1;
+      transform: none
+    }
+  }
+
+  .summary-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: .75rem;
+    border-bottom: 2px solid var(--cream2);
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .75rem;
+    font-size: .9rem;
+    color: var(--muted);
+  }
+
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--cream2);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .summary-price-big {
+    color: var(--green);
+  }
+
+  .summary-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+  }
+
+  .btn-order {
+    width: 100%;
+    background: linear-gradient(135deg, var(--green), #219a52);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--spring);
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    box-shadow: 0 4px 20px rgba(39, 174, 96, .35);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-order::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, .2);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .5s;
+    border-radius: inherit;
+  }
+
+  .btn-order:hover::before {
+    transform: scaleX(1);
+  }
+
+  .btn-order:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(39, 174, 96, .5);
+  }
+
+  .btn-clear {
+    width: 100%;
+    background: transparent;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+    padding: .75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: var(--spring);
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+  }
+
+  .btn-clear:hover {
+    background: var(--red);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  /* Empty */
+  .empty-cart {
+    text-align: center;
+    padding: 5rem 2rem;
+  }
+
+  .empty-icon {
+    font-size: 6rem;
+    display: block;
+    margin-bottom: 1.5rem;
+    animation: emojiBounce 2s ease-in-out infinite;
+  }
+
+  .empty-cart h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--dark);
+    margin-bottom: .75rem;
+  }
+
+  .empty-cart p {
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .65);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+
+  .modal-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal-box {
+    background: white;
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    transform: scale(.85) translateY(20px);
+    transition: var(--spring);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .2);
+  }
+
+  .modal-overlay.show .modal-box {
+    transform: scale(1) translateY(0);
+  }
+
+  .modal-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    display: block;
+    animation: emojiBounce 1.5s infinite;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: .5rem;
+  }
+
+  .modal-desc {
+    color: var(--muted);
+    font-size: .88rem;
+    margin-bottom: 2rem;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  @media(max-width:768px) {
+    .cart-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="cart-section">
+  <div class="cart-header" data-anim="up">
+    <h1 class="cart-title">
+      <span class="emoji-bounce">🛒</span> Savatingiz
+    </h1>
+    {% if cart_items %}
+    <span style="color:var(--muted);font-size:.9rem;">{{ cart_items|length }} ta mahsulot</span>
+    {% endif %}
+  </div>
+
+  {% if cart_items %}
+  <div class="cart-grid">
+    <div class="cart-items">
+      {% for item in cart_items %}
+      <div class="cart-item" style="animation-delay:{{ forloop.counter0 }}00ms">
+        {% if item.product.image %}
+        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-img">
+        {% else %}
+        <div class="cart-item-placeholder">{{ item.product.category.icon }}</div>
+        {% endif %}
+        <div class="cart-item-info">
+          <div class="cart-item-name">{{ item.product.name }}</div>
+          <div class="cart-item-cat">{{ item.product.category.name }}</div>
+        </div>
+        <div class="cart-item-controls">
+          <div class="cart-item-price">{{ item.product.formatted_price }} so'm</div>
+          <div class="cart-item-actions">
+            <span class="qty-tag">× {{ item.quantity }}</span>
+            <a href="/cart/remove/{{ item.product.pk }}/" class="remove-btn" title="Olib tashlash">✕</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="cart-summary">
+      <div class="summary-title">📋 Buyurtma xulosasi</div>
+      {% for item in cart_items %}
+      <div class="summary-row">
+        <span>{{ item.product.name }} × {{ item.quantity }}</span>
+        <span style="font-weight:600;color:var(--text);">{{ item.product.formatted_price }}</span>
+      </div>
+      {% endfor %}
+      <div class="summary-total">
+        <span>Jami <span class="emoji-pulse">💰</span></span>
+        <span class="summary-price-big">{{ total_formatted }} so'm</span>
+      </div>
+      <div class="summary-actions">
+        <form method="post" action="/order/confirm/" id="orderForm">
+          {% csrf_token %}
+          <button type="submit" class="btn-order">
+            <span class="emoji-bounce">✅</span> Buyurtma berish
+          </button>
+        </form>
+        <button class="btn-clear" onclick="showClearModal()">
+          <span class="emoji-shake">🗑️</span> Savatni tozalash
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-cart" data-anim="scale">
+    <span class="empty-icon">🛒</span>
+    <h2>Savat bo'sh</h2>
+    <p>Hali hech narsa qo'shilmagan. Menyudan mahsulot tanlang! <span class="emoji-float">🍽️</span></p>
+    <a href="/menu/" class="btn-primary">
+      <span class="emoji-bounce">🍽️</span> Menyuga o'tish
+    </a>
+  </div>
+  {% endif %}
+</section>
+
+<!-- Clear Modal -->
+<div class="modal-overlay" id="clearModal">
+  <div class="modal-box">
+    <span class="modal-icon">🗑️</span>
+    <div class="modal-title">Savatni tozalash?</div>
+    <div class="modal-desc">Barcha qo'shilgan mahsulotlar o'chiriladi. Bu amalni ortga qaytarib bo'lmaydi.</div>
+    <div class="modal-actions">
+      <a href="/cart/clear/" class="btn-primary" style="padding:.75rem 1.5rem;">
+        <span class="emoji-shake">✅</span> Ha, tozala
+      </a>
+      <button onclick="hideClearModal()" class="btn-outline" style="padding:.75rem 1.5rem;">
+        Bekor qilish
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function showClearModal() {
+    document.getElementById('clearModal').classList.add('show');
+  }
+  function hideClearModal() {
+    document.getElementById('clearModal').classList.remove('show');
+  }
+  document.getElementById('clearModal')?.addEventListener('click', function (e) {
+    if (e.target === this) hideClearModal();
+  });
+</script>
+{% endblock %}

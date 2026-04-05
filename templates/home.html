@@ -1,0 +1,1134 @@
+{% extends 'base.html' %}
+{% block title %}Lazzat Restaurant — Xush kelibsiz!{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--dark);
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: particleRise linear infinite;
+  }
+
+  @keyframes particleRise {
+    0% {
+      transform: translateY(100vh) scale(0) rotate(0deg);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: .7;
+    }
+
+    90% {
+      opacity: .2;
+    }
+
+    100% {
+      transform: translateY(-100px) scale(1) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .hero-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 65% 50%, rgba(201, 168, 76, .12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 10% 80%, rgba(192, 57, 43, .07) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 90% 10%, rgba(39, 174, 96, .05) 0%, transparent 50%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(201, 168, 76, .05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201, 168, 76, .05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    from {
+      background-position: 0 0
+    }
+
+    to {
+      background-position: 60px 60px
+    }
+  }
+
+  .hero-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Hero left */
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: rgba(201, 168, 76, .12);
+    border: 1px solid rgba(201, 168, 76, .3);
+    color: var(--gold);
+    padding: .5rem 1.25rem;
+    border-radius: 50px;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    animation: eyebrowIn .8s cubic-bezier(.34, 1.56, .64, 1) .2s both;
+  }
+
+  @keyframes eyebrowIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px)
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0)
+    }
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+    font-weight: 900;
+    color: white;
+    line-height: 1.05;
+    margin-bottom: 1.25rem;
+    animation: titleIn .9s cubic-bezier(.34, 1.56, .64, 1) .4s both;
+  }
+
+  @keyframes titleIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px)
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0)
+    }
+  }
+
+  .hero-title .line1 {
+    display: block;
+  }
+
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, #fff9e6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% auto;
+    animation: titleIn .9s cubic-bezier(.34, 1.56, .64, 1) .4s both, textShimmer 4s linear 1.5s infinite;
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, .6);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    max-width: 480px;
+    animation: subtitleIn .8s ease .65s both;
+  }
+
+  @keyframes subtitleIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px)
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0)
+    }
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+    animation: ctaIn .8s cubic-bezier(.34, 1.56, .64, 1) .85s both;
+  }
+
+  @keyframes ctaIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px)
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0)
+    }
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    animation: statsIn .8s ease 1.05s both;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(201, 168, 76, .15);
+  }
+
+  @keyframes statsIn {
+    from {
+      opacity: 0
+    }
+
+    to {
+      opacity: 1
+    }
+  }
+
+  .stat-num-hero {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label-hero {
+    font-size: .75rem;
+    color: rgba(255, 255, 255, .5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: .2rem;
+  }
+
+  /* Hero right — food visual */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: visualIn 1.2s cubic-bezier(.34, 1.56, .64, 1) .3s both;
+  }
+
+  @keyframes visualIn {
+    from {
+      opacity: 0;
+      transform: translateX(60px) rotate(-10deg)
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0) rotate(0deg)
+    }
+  }
+
+  .food-stage {
+    position: relative;
+    width: 420px;
+    height: 420px;
+  }
+
+  .food-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 168, 76, .2);
+    animation: ringPulse 4s ease-in-out infinite;
+  }
+
+  .food-ring:nth-child(1) {
+    inset: 0;
+    animation-delay: 0s;
+  }
+
+  .food-ring:nth-child(2) {
+    inset: 30px;
+    animation-delay: .8s;
+    border-color: rgba(201, 168, 76, .12);
+  }
+
+  .food-ring:nth-child(3) {
+    inset: 60px;
+    animation-delay: 1.6s;
+    border-color: rgba(201, 168, 76, .08);
+  }
+
+  @keyframes ringPulse {
+
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: .7
+    }
+
+    50% {
+      transform: scale(1.04);
+      opacity: 1
+    }
+  }
+
+  .food-main-emoji {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    font-size: 9rem;
+    line-height: 1;
+    filter: drop-shadow(0 20px 40px rgba(201, 168, 76, .4));
+    animation: foodFloat 5s ease-in-out infinite;
+  }
+
+  @keyframes foodFloat {
+
+    0%,
+    100% {
+      transform: translate(-50%, -52%) rotate(-4deg) scale(1)
+    }
+
+    50% {
+      transform: translate(-50%, -58%) rotate(4deg) scale(1.05)
+    }
+  }
+
+  .orbit-wrap {
+    position: absolute;
+    inset: 40px;
+    animation: orbitSpin 12s linear infinite;
+  }
+
+  .orbit-item {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    background: rgba(26, 16, 8, .8);
+    border: 2px solid rgba(201, 168, 76, .35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    top: -32px;
+    left: calc(50% - 32px);
+    animation: orbitSpin 12s linear infinite reverse;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+    transition: var(--spring);
+  }
+
+  .orbit-item:hover {
+    transform: scale(1.2);
+  }
+
+  .orbit-wrap:nth-child(5) {
+    animation-delay: -4s;
+    animation-direction: reverse;
+  }
+
+  .orbit-wrap:nth-child(5) .orbit-item {
+    animation-direction: normal;
+  }
+
+  .orbit-wrap:nth-child(6) {
+    animation-delay: -8s;
+  }
+
+  .orbit-wrap:nth-child(6) .orbit-item {
+    animation-direction: reverse;
+  }
+
+  @keyframes orbitSpin {
+    from {
+      transform: rotate(0deg)
+    }
+
+    to {
+      transform: rotate(360deg)
+    }
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 5rem 0;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: rgba(201, 168, 76, .1);
+    color: var(--gold);
+    padding: .4rem 1.1rem;
+    border-radius: 50px;
+    font-size: .78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: .8rem;
+    border: 1px solid rgba(201, 168, 76, .2);
+    transition: var(--spring);
+  }
+
+  .section-tag:hover {
+    background: rgba(201, 168, 76, .2);
+    transform: scale(1.05);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: .75rem;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── CATEGORIES ── */
+  .cat-grid {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .cat-pill {
+    background: white;
+    border: 2px solid var(--cream3);
+    color: var(--text);
+    padding: .75rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: .9rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    transition: var(--spring);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-pill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    opacity: 0;
+    transition: opacity .3s;
+    border-radius: inherit;
+  }
+
+  .cat-pill span {
+    position: relative;
+    z-index: 1;
+    transition: color .3s;
+  }
+
+  .cat-pill:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(201, 168, 76, .25);
+  }
+
+  .cat-pill:hover::after {
+    opacity: 1;
+  }
+
+  .cat-pill:hover span {
+    color: var(--dark);
+  }
+
+  /* ── PRODUCTS GRID ── */
+  .products-grid {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .06);
+    transition: var(--spring);
+    position: relative;
+    cursor: pointer;
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .14);
+  }
+
+  .product-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    box-shadow: 0 0 0 2px var(--gold) inset;
+    opacity: 0;
+    transition: opacity .3s;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .product-card:hover::before {
+    opacity: 1;
+  }
+
+  .product-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform .5s ease;
+  }
+
+  .product-card:hover .product-img {
+    transform: scale(1.06);
+  }
+
+  .product-img-wrap {
+    overflow: hidden;
+    height: 200px;
+  }
+
+  .product-img-placeholder {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, var(--cream2), var(--cream));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4.5rem;
+    transition: transform .5s;
+  }
+
+  .product-card:hover .product-img-placeholder {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--red);
+    color: white;
+    font-size: .7rem;
+    font-weight: 700;
+    padding: .3rem .75rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    animation: badgePop .4s cubic-bezier(.34, 1.56, .64, 1);
+    z-index: 2;
+  }
+
+  .product-body {
+    padding: 1.25rem;
+  }
+
+  .product-cat {
+    font-size: .75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: .3rem 0;
+    text-decoration: none;
+    display: block;
+    transition: color .3s;
+  }
+
+  .product-card:hover .product-name {
+    color: var(--gold-dark);
+  }
+
+  .product-desc {
+    font-size: .83rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+  }
+
+  .product-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .price-unit {
+    font-size: .72rem;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-cart {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--dark);
+    border: none;
+    padding: .6rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: var(--spring);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-cart:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, .45);
+  }
+
+  .btn-cart:active {
+    transform: scale(.95);
+  }
+
+  /* ── RESERVATION FEATURE ── */
+  .reservation-feature {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem 5rem;
+  }
+
+  .reservation-shell {
+    background:
+      radial-gradient(circle at top right, rgba(201, 168, 76, .2), transparent 32%),
+      linear-gradient(135deg, #20140a 0%, #2c1b0f 55%, #3f2411 100%);
+    border-radius: 34px;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(26, 16, 8, 0.22);
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+  }
+
+  .reservation-copy,
+  .reservation-panel {
+    padding: 3rem;
+  }
+
+  .reservation-copy {
+    color: white;
+    position: relative;
+  }
+
+  .reservation-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .reservation-sub {
+    color: rgba(255, 255, 255, .72);
+    line-height: 1.8;
+    max-width: 560px;
+    margin-bottom: 1.8rem;
+  }
+
+  .reservation-points {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .reservation-point {
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(201, 168, 76, .18);
+    border-radius: 18px;
+    padding: 1rem 1.1rem;
+  }
+
+  .reservation-point strong {
+    display: block;
+    color: var(--gold-light);
+    margin-bottom: .35rem;
+    font-size: .95rem;
+  }
+
+  .reservation-point span {
+    color: rgba(255, 255, 255, .66);
+    font-size: .88rem;
+    line-height: 1.55;
+  }
+
+  .reservation-panel {
+    background: rgba(255, 255, 255, .95);
+  }
+
+  .reservation-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--dark);
+    margin-bottom: .5rem;
+  }
+
+  .reservation-panel-sub {
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .reservation-meta {
+    display: grid;
+    gap: .85rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .reservation-meta-item {
+    display: flex;
+    gap: .85rem;
+    align-items: flex-start;
+    padding: .85rem 1rem;
+    border-radius: 16px;
+    background: var(--cream);
+    border: 1px solid var(--cream3);
+  }
+
+  .reservation-meta-item i {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(201, 168, 76, .14);
+    color: var(--gold-dark);
+    flex-shrink: 0;
+  }
+
+  .reservation-meta-item strong {
+    display: block;
+    color: var(--dark);
+    margin-bottom: .22rem;
+  }
+
+  .reservation-meta-item span {
+    color: var(--muted);
+    font-size: .88rem;
+    line-height: 1.55;
+  }
+
+  /* ── PROMO BANNER ── */
+  .promo-banner {
+    background: linear-gradient(135deg, var(--dark2) 0%, var(--dark) 100%);
+    padding: 5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .promo-dots {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .promo-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: .05;
+    animation: dotFloat ease-in-out infinite;
+  }
+
+  @keyframes dotFloat {
+
+    0%,
+    100% {
+      transform: translateY(0)
+    }
+
+    50% {
+      transform: translateY(-30px)
+    }
+  }
+
+  .promo-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    color: white;
+    margin-bottom: .75rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .promo-sub {
+    color: rgba(255, 255, 255, .6);
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .promo-btn {
+    position: relative;
+    z-index: 2;
+  }
+
+  @media(max-width:900px) {
+    .hero-container {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .hero-cta {
+      justify-content: center;
+    }
+
+    .hero-stats {
+      justify-content: center;
+    }
+
+    .hero-visual {
+      display: none;
+    }
+
+    .hero-subtitle {
+      margin: 0 auto 2rem;
+    }
+
+    .reservation-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .reservation-points {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-particles" id="heroParticles"></div>
+
+  <div class="hero-container">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span class="emoji-bounce">✨</span> Xush kelibsiz, mehmon!
+      </div>
+      <h1 class="hero-title">
+        <span class="line1">Milliy ta'mlar</span>
+        <span class="line2">Lazzat Restaurant</span>
+      </h1>
+      <p class="hero-subtitle">
+        Har bir taom — bu yurakdan tayyorlangan san'at.
+        <span class="emoji-float">🍲</span> Narxlar bilan tanishing,
+        stolda QR kod orqali buyurtma bering.
+      </p>
+      <div class="hero-cta">
+        <a href="/menu/" class="btn-primary">
+          <span class="emoji-shake">🍽️</span> Menyuni ko'rish
+        </a>
+        <a href="{% url 'reservation' %}" class="btn-outline">
+          <span class="emoji-bounce">📅</span> Stol bron qilish
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num-hero" id="statExp">0</div>
+          <div class="stat-label-hero">Yillik tajriba</div>
+        </div>
+        <div>
+          <div class="stat-num-hero" id="statDish">0</div>
+          <div class="stat-label-hero">Taom turi</div>
+        </div>
+        <div>
+          <div class="stat-num-hero" id="statClient">0</div>
+          <div class="stat-label-hero">Mamnun mijozlar</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="food-stage">
+        <div class="food-ring"></div>
+        <div class="food-ring"></div>
+        <div class="food-ring"></div>
+        <div class="food-main-emoji">🍲</div>
+        <div class="orbit-wrap">
+          <div class="orbit-item">🥗</div>
+        </div>
+        <div class="orbit-wrap">
+          <div class="orbit-item">🥤</div>
+        </div>
+        <div class="orbit-wrap">
+          <div class="orbit-item">🍰</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CATEGORIES ═══ -->
+<section class="section" style="padding-bottom:2rem;">
+  <div class="section-header">
+    <div class="section-tag" data-anim="scale"><span class="emoji-pulse">🏷️</span> Kategoriyalar</div>
+    <h2 class="section-title" data-anim="up">Nimani istaysiz?</h2>
+    <p class="section-desc" data-anim="up" data-delay="2">Sevimli taomingizni toping va buyurtma bering</p>
+  </div>
+  <div class="cat-grid">
+    <a href="/menu/" class="cat-pill" data-anim="scale" data-delay="1"><span>🍽️ Hammasi</span></a>
+    {% for category in categories %}
+    <a href="/menu/?category={{ category.id }}" class="cat-pill" data-anim="scale" data-delay="{{ forloop.counter }}">
+      <span>{{ category.icon }} {{ category.name }}</span>
+    </a>
+    {% empty %}
+    <a href="/menu/" class="cat-pill" data-anim="scale" data-delay="1"><span>🍲 Asosiy taomlar</span></a>
+    <a href="/menu/" class="cat-pill" data-anim="scale" data-delay="2"><span>🥗 Salatlar</span></a>
+    <a href="/menu/" class="cat-pill" data-anim="scale" data-delay="3"><span>🥤 Ichimliklar</span></a>
+    <a href="/menu/" class="cat-pill" data-anim="scale" data-delay="4"><span>🍰 Shirinliklar</span></a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ═══ POPULAR PRODUCTS ═══ -->
+{% if popular_products %}
+<section class="section">
+  <div class="section-header">
+    <div class="section-tag" data-anim="scale"><span class="emoji-tada">🔥</span> Eng mashhur</div>
+    <h2 class="section-title" data-anim="up">Mijozlar sevgan taomlar</h2>
+    <p class="section-desc" data-anim="up" data-delay="2">Eng ko'p buyurtma beriladigan mazali taomlarimiz</p>
+  </div>
+  <div class="products-grid">
+    {% for product in popular_products %}
+    <div class="product-card" data-anim="up" data-delay="{{ forloop.counter }}">
+      {% if product.is_popular %}<div class="product-badge">🔥 Popular</div>{% endif %}
+      <a href="/product/{{ product.pk }}/">
+        <div class="product-img-wrap">
+          {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+          {% else %}
+          <div class="product-img-placeholder">{{ product.category.icon }}</div>
+          {% endif %}
+        </div>
+      </a>
+      <div class="product-body">
+        <div class="product-cat">{{ product.category.name }}</div>
+        <a href="/product/{{ product.pk }}/" class="product-name">{{ product.name }}</a>
+        {% if product.description %}<p class="product-desc">{{ product.description }}</p>{% endif %}
+        <div class="product-footer">
+          <div class="product-price">{{ product.formatted_price }} <span class="price-unit">so'm</span></div>
+          <a href="/cart/add/{{ product.pk }}/" class="btn-cart" data-add-cart="/cart/add/{{ product.pk }}/">
+            🛒 Qo'sh
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ RESERVATION FEATURE ═══ -->
+<section class="reservation-feature">
+  <div class="reservation-shell">
+    <div class="reservation-copy">
+      <div class="section-tag" style="display:inline-flex;margin-bottom:1rem;">
+        <span class="emoji-bounce">📅</span> Stol bron qilish
+      </div>
+      <h2 class="reservation-title">Bir necha daqiqada bron qiling, admin esa darhol Telegram'da ko'rsin</h2>
+      <p class="reservation-sub">
+        Kunning eng qulay vaqtini tanlang, mehmonlar sonini yozing va maxsus istaklaringizni qoldiring.
+        Yuborilgan so'rov admin panelga saqlanadi va Telegram botga ham yetib boradi.
+      </p>
+      <div class="reservation-points">
+        <div class="reservation-point">
+          <strong>Bir qarashda aniq</strong>
+          <span>Sana, vaqt, joylashuv va tashrif sababini bitta oqimda tanlaysiz.</span>
+        </div>
+        <div class="reservation-point">
+          <strong>Jamoa uchun tezkor signal</strong>
+          <span>Bron yuborilishi bilan admin panel va Telegram orqali xabar olinadi.</span>
+        </div>
+        <div class="reservation-point">
+          <strong>Oilaviy va VIP variantlar</strong>
+          <span>Oddiy zal, terrasa, oilaviy zona yoki VIP xona uchun alohida so'rov qoldiring.</span>
+        </div>
+        <div class="reservation-point">
+          <strong>Bayramlar uchun tayyor</strong>
+          <span>Tug'ilgan kun, biznes uchrashuv yoki romantik kecha kabi formatlarni ko'rsating.</span>
+        </div>
+      </div>
+      <a href="{% url 'reservation' %}" class="btn-primary">
+        <span class="emoji-pulse">🍽️</span> Hozir bron qilish
+      </a>
+    </div>
+
+    <div class="reservation-panel">
+      <h3 class="reservation-panel-title">Bron xizmati</h3>
+      <p class="reservation-panel-sub">
+        Restoranga oldindan kelish rejasini aniq va chiroyli ko'rinishda yuboring.
+      </p>
+
+      <div class="reservation-meta">
+        <div class="reservation-meta-item">
+          <i class="fas fa-clock"></i>
+          <div>
+            <strong>Ish vaqti</strong>
+            <span>Har kuni 09:00 dan 23:00 gacha. Bron qabul qilish oynasi 09:00-22:00.</span>
+          </div>
+        </div>
+        <div class="reservation-meta-item">
+          <i class="fas fa-users"></i>
+          <div>
+            <strong>Mehmonlar oqimi</strong>
+            <span>1 tadan 16 tagacha mehmon uchun bron so'rovi yuborish mumkin.</span>
+          </div>
+        </div>
+        <div class="reservation-meta-item">
+          <i class="fab fa-telegram-plane"></i>
+          <div>
+            <strong>Tezkor tasdiqlash</strong>
+            <span>Yuborilgan forma admin panelda saqlanadi va Telegram botga xabar bo'lib boradi.</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="{% url 'reservation' %}" class="btn-outline">
+        <span class="emoji-bounce">📅</span> Bron sahifasini ochish
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROMO BANNER ═══ -->
+<section class="promo-banner">
+  <div class="promo-dots" id="promoDots"></div>
+  <div class="section-tag" data-anim="scale" style="margin:0 auto 1rem;">
+    <span class="emoji-spin">📱</span> QR Kod
+  </div>
+  <h2 class="promo-title" data-anim="up">Stolda <span class="text-shimmer">QR Kod</span> bor?</h2>
+  <p class="promo-sub" data-anim="up" data-delay="2">
+    Skanerlang va barcha narxlarni ko'ring — xizmatchi kutmay turib!
+    <span class="emoji-float">✨</span>
+  </p>
+  <div class="promo-btn" data-anim="scale" data-delay="3">
+    <a href="/menu/" class="btn-primary" style="font-size:1rem;padding:1rem 2.5rem;">
+      <span class="emoji-bounce">🍽️</span> Menyuni Ko'rish
+    </a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Particles
+  (function () {
+    const c = document.getElementById('heroParticles');
+    const colors = ['#C9A84C', '#E8C97A', '#fff9e6', '#27AE60', '#E74C3C'];
+    const emojis = ['🌟', '✨', '⭐', '🍴', '🥢', '🌿'];
+    for (let i = 0; i < 25; i++) {
+      const isEmoji = Math.random() > .7;
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+      left:${Math.random() * 100}%;
+      animation-duration:${Math.random() * 15 + 10}s;
+      animation-delay:${Math.random() * 15}s;
+      width:${Math.random() * 4 + 2}px; height:${Math.random() * 4 + 2}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+    `;
+      if (isEmoji) { p.textContent = emojis[Math.floor(Math.random() * emojis.length)]; p.style.background = 'none'; p.style.fontSize = '1rem'; }
+      c.appendChild(p);
+    }
+  })();
+
+  // Promo dots
+  (function () {
+    const c = document.getElementById('promoDots');
+    for (let i = 0; i < 8; i++) {
+      const d = document.createElement('div');
+      d.className = 'promo-dot';
+      const s = Math.random() * 100 + 50;
+      d.style.cssText = `
+      width:${s}px;height:${s}px;
+      left:${Math.random() * 100}%;top:${Math.random() * 100}%;
+      animation-duration:${Math.random() * 5 + 4}s;
+      animation-delay:${Math.random() * 4}s;
+    `;
+      c.appendChild(d);
+    }
+  })();
+
+  // Counter animations
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      countUp(document.getElementById('statExp'), 15);
+      countUp(document.getElementById('statDish'), 200);
+      countUp(document.getElementById('statClient'), 50000);
+    }, 800);
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Kategoriyalar{% endblock %}
+{% block nav_categories %}active{% endblock %}
+{% block page_title %}Kategoriyalar{% endblock %}
+{% block breadcrumb %}Kategoriyalar{% endblock %}
+
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;" class="animate-in">
+  <div>
+    <h2 style="font-size:1.4rem;font-weight:800;color:white;">Kategoriyalar</h2>
+    <p style="color:var(--text3);font-size:0.85rem;margin-top:2px;">{{ categories|length }} ta kategoriya</p>
+  </div>
+  <a href="{% url 'admin_category_add' %}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Yangi kategoriya
+  </a>
+</div>
+
+<div class="card animate-in">
+  {% if categories %}
+  <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Icon</th>
+          <th>Nomi</th>
+          <th>Tartib</th>
+          <th>Mahsulotlar</th>
+          <th>Amallar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat in categories %}
+        <tr class="animate-in" style="animation-delay:{{ forloop.counter0 }}0ms">
+          <td>
+            <div style="width:46px;height:46px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+              {{ cat.icon }}
+            </div>
+          </td>
+          <td>
+            <div style="font-weight:700;color:white;font-size:0.95rem;">{{ cat.name }}</div>
+          </td>
+          <td>
+            <span class="badge badge-purple">{{ cat.order }}</span>
+          </td>
+          <td>
+            <span class="badge badge-gold">{{ cat.cnt }} ta</span>
+          </td>
+          <td>
+            <div style="display:flex;gap:0.5rem;">
+              <a href="{% url 'admin_category_edit' cat.pk %}" class="btn btn-ghost btn-sm btn-icon" title="Tahrirlash">
+                <i class="fas fa-edit"></i>
+              </a>
+              <button onclick="confirmDelete('{{ cat.name }}', 'del-cat-{{ cat.pk }}')"
+                      class="btn btn-danger btn-sm btn-icon" title="O'chirish">
+                <i class="fas fa-trash"></i>
+              </button>
+              <form id="del-cat-{{ cat.pk }}" method="post" action="{% url 'admin_category_delete' cat.pk %}" style="display:none;">
+                {% csrf_token %}
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🏷️</div>
+    <h3>Kategoriyalar yo'q</h3>
+    <p>Birinchi kategoriyani qo'shing</p>
+    <a href="{% url 'admin_category_add' %}" class="btn btn-primary" style="margin-top:1rem;">
+      <i class="fas fa-plus"></i> Qo'shish
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box" style="text-align:center;">
+    <div style="font-size:3rem;margin-bottom:1rem;">🗑️</div>
+    <h3 style="color:white;font-size:1.2rem;margin-bottom:0.5rem;">O'chirishni tasdiqlang</h3>
+    <p style="color:var(--text2);font-size:0.88rem;margin-bottom:1.5rem;">
+      "<span id="deleteTargetName"></span>" o'chiriladi. Bu amal ortga qaytarib bo'lmaydi.
+    </p>
+    <input type="hidden" id="deleteFormId">
+    <div style="display:flex;gap:0.75rem;justify-content:center;">
+      <button onclick="closeDeleteModal()" class="btn btn-ghost">Bekor qilish</button>
+      <button id="confirmDeleteBtn" class="btn btn-danger">Ha, o'chir</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

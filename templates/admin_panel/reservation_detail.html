@@ -1,0 +1,269 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Bron — {{ reservation.full_name }}{% endblock %}
+{% block nav_reservations %}active{% endblock %}
+{% block page_title %}Bron tafsiloti{% endblock %}
+{% block breadcrumb %}<a href="{% url 'admin_reservations' %}">Bronlar</a> › {{ reservation.full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.5rem;
+}
+
+.detail-section-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text3);
+  margin-bottom: 0.85rem;
+}
+
+.hero-card {
+  background: linear-gradient(135deg, rgba(245,158,11,0.14), rgba(139,92,246,0.12));
+  border: 1px solid rgba(245,158,11,0.18);
+}
+
+.hero-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #1a0a00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.hero-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: white;
+}
+
+.hero-phone {
+  color: var(--text2);
+  font-size: 0.88rem;
+  margin-top: 4px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.info-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.info-label {
+  display: block;
+  color: var(--text3);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.35rem;
+}
+
+.info-value {
+  color: white;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.note-box {
+  margin-top: 1rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 0.9rem;
+}
+
+.actions-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 960px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-grid animate-in">
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+    <div class="card hero-card">
+      <div class="card-body">
+        <div class="hero-head">
+          <div class="hero-avatar">{{ reservation.full_name|first|upper }}</div>
+          <div>
+            <div class="hero-name">{{ reservation.full_name }}</div>
+            <div class="hero-phone">{{ reservation.phone_number }}</div>
+          </div>
+          <div style="margin-left:auto;">
+            <span class="badge {% if reservation.status == 'confirmed' %}badge-green{% elif reservation.status == 'cancelled' %}badge-red{% elif reservation.status == 'completed' %}badge-blue{% else %}badge-gold{% endif %}">
+              {{ reservation.get_status_display }}
+            </span>
+          </div>
+        </div>
+
+        <div class="detail-section-title">Bron tafsiloti</div>
+        <div class="info-grid">
+          <div class="info-card">
+            <span class="info-label">Sana va vaqt</span>
+            <div class="info-value">{{ reservation.reservation_date|date:"d F Y" }} / {{ reservation.reservation_time|time:"H:i" }}</div>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Mehmonlar soni</span>
+            <div class="info-value">{{ reservation.guest_count }} ta</div>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Joylashuv</span>
+            <div class="info-value">{{ reservation.get_seating_preference_display }}</div>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Tashrif sababi</span>
+            <div class="info-value">{{ reservation.get_occasion_display }}</div>
+          </div>
+        </div>
+
+        <div class="detail-section-title" style="margin-top:1.2rem;">Mijoz izohi</div>
+        <div class="note-box">
+          {{ reservation.special_requests|default:"Mijoz qo'shimcha izoh qoldirmagan." }}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-history" style="color:var(--blue)"></i> Xizmat ma'lumotlari</div>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-card">
+            <span class="info-label">Yuborilgan</span>
+            <div class="info-value">{{ reservation.created_at|date:"d.m.Y H:i" }}</div>
+          </div>
+          <div class="info-card">
+            <span class="info-label">So'nggi yangilanish</span>
+            <div class="info-value">{{ reservation.updated_at|date:"d.m.Y H:i" }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-sliders-h" style="color:var(--purple2)"></i> Status boshqaruvi</div>
+      </div>
+      <div class="card-body">
+        <form method="post" class="actions-form">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form-label">Holati</label>
+            <select name="status" class="form-control">
+              {% for value, label in statuses %}
+              <option value="{{ value }}" {% if reservation.status == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <label class="form-check">
+            <input type="checkbox" name="is_contacted" {% if reservation.is_contacted %}checked{% endif %}>
+            <span>Telefon orqali bog'lanildi</span>
+          </label>
+
+          <div class="form-group">
+            <label class="form-label">Admin eslatmasi</label>
+            <textarea name="admin_note" class="form-control" placeholder="Mijoz bilan aloqa, tayyorlov yoki ichki izohlar">{{ reservation.admin_note }}</textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Saqlash
+            </button>
+            <a href="{% url 'admin_reservations' %}" class="btn btn-ghost">
+              <i class="fas fa-arrow-left"></i> Orqaga
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-trash" style="color:var(--red)"></i> Xavfli amal</div>
+      </div>
+      <div class="card-body">
+        <p style="color:var(--text2);font-size:0.88rem;line-height:1.7;margin-bottom:1rem;">
+          Agar bu bron noto'g'ri yoki bekor qilingan bo'lsa, yozuvni butunlay o'chirishingiz mumkin.
+        </p>
+        <button onclick="document.getElementById('deleteModal').classList.add('show')" class="btn btn-danger">
+          <i class="fas fa-trash"></i> Bronni o'chirish
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box" style="text-align:center;">
+    <div style="font-size:3rem;margin-bottom:1rem;">🗑️</div>
+    <h3 style="color:white;font-size:1.2rem;margin-bottom:0.5rem;">Bronni o'chirish?</h3>
+    <p style="color:var(--text2);font-size:0.88rem;margin-bottom:1.5rem;">
+      "{{ reservation.full_name }}" uchun yozilgan bron butunlay o'chiriladi.
+    </p>
+    <div style="display:flex;gap:0.75rem;justify-content:center;">
+      <button onclick="document.getElementById('deleteModal').classList.remove('show')" class="btn btn-ghost">
+        Bekor qilish
+      </button>
+      <form method="post" action="{% url 'admin_reservation_delete' reservation.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Ha, o'chir</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('deleteModal').addEventListener('click', function (e) {
+  if (e.target === this) this.classList.remove('show');
+});
+</script>
+{% endblock %}

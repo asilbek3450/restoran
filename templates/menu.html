@@ -1,0 +1,507 @@
+{% extends 'base.html' %}
+{% block title %}Menyu — Lazzat Restaurant{% endblock %}
+{% block nav_menu %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+  .menu-hero {
+    background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .menu-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(201, 168, 76, .1), transparent);
+    pointer-events: none;
+  }
+
+  .menu-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: white;
+    margin-bottom: .5rem;
+    animation: heroTitleIn .8s cubic-bezier(.34, 1.56, .64, 1) both;
+  }
+
+  @keyframes heroTitleIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(.95)
+    }
+
+    to {
+      opacity: 1;
+      transform: none
+    }
+  }
+
+  .menu-hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    animation: heroTitleIn .8s .2s both;
+  }
+
+  .menu-hero .floating-emojis {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .float-emoji {
+    position: absolute;
+    font-size: 2rem;
+    opacity: .08;
+    animation: emojiFloat ease-in-out infinite;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    background: white;
+    border-bottom: 1px solid var(--cream3);
+    position: sticky;
+    top: 72px;
+    z-index: 100;
+    padding: .85rem 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .06);
+    animation: filterSlideIn .5s cubic-bezier(.34, 1.56, .64, 1) .3s both;
+  }
+
+  @keyframes filterSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px)
+    }
+
+    to {
+      opacity: 1;
+      transform: none
+    }
+  }
+
+  .filter-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: .75rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    align-items: center;
+  }
+
+  .filter-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    white-space: nowrap;
+    padding: .6rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: .88rem;
+    border: 2px solid var(--cream3);
+    background: white;
+    color: var(--text);
+    cursor: pointer;
+    transition: var(--spring);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .filter-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    opacity: 0;
+    transition: opacity .3s;
+    border-radius: inherit;
+  }
+
+  .filter-btn span {
+    position: relative;
+    z-index: 1;
+    transition: color .3s;
+  }
+
+  .filter-btn:hover,
+  .filter-btn.active {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, .25);
+  }
+
+  .filter-btn:hover::before,
+  .filter-btn.active::before {
+    opacity: 1;
+  }
+
+  .filter-btn:hover span,
+  .filter-btn.active span {
+    color: var(--dark);
+  }
+
+  /* ── MENU SECTION ── */
+  .menu-section {
+    padding: 3rem 0;
+  }
+
+  .menu-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .category-section {
+    margin-bottom: 3.5rem;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--cream2);
+  }
+
+  .category-icon-wrap {
+    width: 54px;
+    height: 54px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    box-shadow: 0 4px 16px rgba(201, 168, 76, .35);
+    transition: var(--spring);
+  }
+
+  .category-icon-wrap:hover {
+    transform: rotate(10deg) scale(1.1);
+  }
+
+  .cat-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .cat-count {
+    font-size: .8rem;
+    color: var(--muted);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .06);
+    transition: var(--spring);
+    position: relative;
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .14);
+  }
+
+  .product-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    box-shadow: 0 0 0 2px var(--gold) inset;
+    opacity: 0;
+    transition: opacity .3s;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .product-card:hover::before {
+    opacity: 1;
+  }
+
+  .product-img-wrap {
+    overflow: hidden;
+    height: 190px;
+  }
+
+  .product-img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    transition: transform .6s ease;
+  }
+
+  .product-card:hover .product-img {
+    transform: scale(1.08);
+  }
+
+  .product-img-placeholder {
+    width: 100%;
+    height: 190px;
+    background: linear-gradient(135deg, #fdf0d5, #fce8b2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    transition: transform .5s;
+  }
+
+  .product-card:hover .product-img-placeholder {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .product-badge {
+    position: absolute;
+    top: .75rem;
+    left: .75rem;
+    background: var(--red);
+    color: white;
+    font-size: .68rem;
+    font-weight: 700;
+    padding: .25rem .65rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  .product-body {
+    padding: 1.25rem;
+  }
+
+  .product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: .4rem;
+    text-decoration: none;
+    display: block;
+    transition: color .3s;
+  }
+
+  .product-card:hover .product-name {
+    color: var(--gold-dark);
+  }
+
+  .product-desc {
+    font-size: .82rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .product-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .price-sub {
+    font-size: .72rem;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-cart {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--dark);
+    border: none;
+    padding: .6rem 1.1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: var(--spring);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-cart:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, .45);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+
+  .empty-state .icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+    animation: emojiBounce 2s infinite;
+  }
+
+  .empty-state h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--dark);
+    margin-bottom: .5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="menu-hero">
+  <div class="menu-hero-bg"></div>
+  <div class="floating-emojis" id="floatEmojis"></div>
+  <div class="section-tag" style="margin:0 auto 1rem;display:inline-flex;" data-anim="scale">
+    <span class="emoji-bounce">🍽️</span> Bizning Menyu
+  </div>
+  <h1>Barcha taomlar bir joyda <span class="emoji-tada">✨</span></h1>
+  <p>Narxlarni ko'ring va buyurtma bering</p>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <a href="/menu/" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">
+      <span>🍽️ Hammasi</span>
+    </a>
+    {% for cat in categories %}
+    <a href="/menu/?category={{ cat.id }}"
+      class="filter-btn {% if selected_category == cat.id|stringformat:'s' %}active{% endif %}">
+      <span>{{ cat.icon }} {{ cat.name }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+<section class="menu-section">
+  <div class="menu-container">
+
+    {% if selected_category == 'all' %}
+    {% regroup products by category as category_list %}
+    {% for group in category_list %}
+    <div class="category-section" data-anim="up" data-delay="{{ forloop.counter }}">
+      <div class="category-header">
+        <div class="category-icon-wrap">{{ group.grouper.icon }}</div>
+        <div>
+          <div class="cat-name">{{ group.grouper.name }}</div>
+          <div class="cat-count">{{ group.list|length }} ta mahsulot</div>
+        </div>
+      </div>
+      <div class="products-grid">
+        {% for product in group.list %}
+        <div class="product-card" data-anim="scale" data-delay="{{ forloop.counter }}">
+          {% if product.is_popular %}<div class="product-badge">🔥 Popular</div>{% endif %}
+          <a href="/product/{{ product.pk }}/">
+            <div class="product-img-wrap">
+              {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+              {% else %}<div class="product-img-placeholder">{{ product.category.icon }}</div>{% endif %}
+            </div>
+          </a>
+          <div class="product-body">
+            <a href="/product/{{ product.pk }}/" class="product-name">{{ product.name }}</a>
+            {% if product.description %}<p class="product-desc">{{ product.description }}</p>{% endif %}
+            <div class="product-footer">
+              <div class="product-price">{{ product.formatted_price }} <span class="price-sub">so'm</span></div>
+              <a href="/cart/add/{{ product.pk }}/" class="btn-cart" data-add-cart="/cart/add/{{ product.pk }}/">🛒
+                Qo'sh</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty-state" data-anim="scale">
+      <span class="icon">🍽️</span>
+      <h3>Hozircha mahsulotlar yo'q</h3>
+      <p>Admin paneldan mahsulotlar qo'shing</p>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="products-grid">
+      {% for product in products %}
+      <div class="product-card" data-anim="scale" data-delay="{{ forloop.counter }}">
+        {% if product.is_popular %}<div class="product-badge">🔥 Popular</div>{% endif %}
+        <a href="/product/{{ product.pk }}/">
+          <div class="product-img-wrap">
+            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+            {% else %}<div class="product-img-placeholder">{{ product.category.icon }}</div>{% endif %}
+          </div>
+        </a>
+        <div class="product-body">
+          <a href="/product/{{ product.pk }}/" class="product-name">{{ product.name }}</a>
+          {% if product.description %}<p class="product-desc">{{ product.description }}</p>{% endif %}
+          <div class="product-footer">
+            <div class="product-price">{{ product.formatted_price }} <span class="price-sub">so'm</span></div>
+            <a href="/cart/add/{{ product.pk }}/" class="btn-cart" data-add-cart="/cart/add/{{ product.pk }}/">🛒
+              Qo'sh</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1;" class="empty-state" data-anim="scale">
+        <span class="icon">🔍</span>
+        <h3>Bu kategoriyada mahsulot yo'q</h3>
+        <p>Boshqa kategoriyani tanlang</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Floating background emojis
+  (function () {
+    const foodEmojis = ['🍲', '🥗', '🍕', '🥩', '🍜', '🧆', '🥘', '🍱', '🥪', '☕', '🥤', '🍰'];
+    const c = document.getElementById('floatEmojis');
+    for (let i = 0; i < 12; i++) {
+      const el = document.createElement('div');
+      el.className = 'float-emoji';
+      el.textContent = foodEmojis[i % foodEmojis.length];
+      el.style.cssText = `
+      left:${Math.random() * 90 + 5}%;
+      top:${Math.random() * 90 + 5}%;
+      animation-duration:${Math.random() * 4 + 3}s;
+      animation-delay:${Math.random() * 3}s;
+      font-size:${Math.random() * 1.5 + 1}rem;
+    `;
+      c.appendChild(el);
+    }
+  })();
+</script>
+{% endblock %}

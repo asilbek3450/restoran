@@ -1,0 +1,421 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.product-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(139,92,246,0.08);
+  transition: all 0.3s;
+  animation: animIn 0.5s ease both;
+}
+
+.product-mini:last-child { border-bottom: none; }
+.product-mini:hover { padding-left: 6px; }
+
+.product-mini-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.product-mini-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.product-mini-name { font-size: 0.88rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+.product-mini-cat  { font-size: 0.75rem; color: var(--text3); margin-top: 1px; }
+.product-mini-price { margin-left: auto; font-size: 0.88rem; font-weight: 700; color: #10B981; white-space: nowrap; }
+
+.msg-item {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(139,92,246,0.08);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  transition: all 0.3s;
+  animation: animIn 0.5s ease both;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.msg-item:last-child { border-bottom: none; }
+.msg-item:hover { padding-left: 6px; }
+
+.msg-avatar {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.msg-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+.msg-text { font-size: 0.8rem; color: var(--text3); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.msg-time { margin-left: auto; font-size: 0.72rem; color: var(--text3); white-space: nowrap; }
+.msg-unread .msg-name { color: white; }
+.msg-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--purple);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+.reservation-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid rgba(139,92,246,0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s;
+  animation: animIn 0.5s ease both;
+}
+
+.reservation-item:last-child { border-bottom: none; }
+.reservation-item:hover { padding-left: 6px; }
+
+.reservation-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(245,158,11,0.16);
+  color: var(--gold2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reservation-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: white;
+}
+
+.reservation-meta {
+  color: var(--text2);
+  font-size: 0.8rem;
+  margin-top: 3px;
+  line-height: 1.55;
+}
+
+.reservation-right {
+  margin-left: auto;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.reservation-time {
+  color: var(--text3);
+  font-size: 0.75rem;
+}
+
+.cat-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  animation: animIn 0.5s ease both;
+}
+
+.cat-bar-name { font-size: 0.85rem; color: var(--text); width: 120px; flex-shrink: 0; font-weight: 500; }
+.cat-bar-track { flex: 1; height: 8px; background: var(--bg3); border-radius: 8px; overflow: hidden; }
+.cat-bar-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--purple), var(--purple2)); transition: width 1s cubic-bezier(0.34,1.56,0.64,1); }
+.cat-bar-count { font-size: 0.78rem; color: var(--text3); width: 40px; text-align: right; flex-shrink: 0; }
+
+.welcome-banner {
+  background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(236,72,153,0.1));
+  border: 1px solid rgba(139,92,246,0.2);
+  border-radius: var(--radius);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: animIn 0.5s ease both;
+  overflow: hidden;
+  position: relative;
+}
+
+.welcome-banner::before {
+  content: '🍴';
+  position: absolute;
+  right: 1.5rem;
+  top: -10px;
+  font-size: 5rem;
+  opacity: 0.08;
+}
+
+.welcome-title { font-size: 1.2rem; font-weight: 800; color: white; margin-bottom: 0.25rem; }
+.welcome-sub { font-size: 0.85rem; color: var(--text2); }
+
+@media (max-width: 900px) {
+  .bottom-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="welcome-banner">
+  <div>
+    <div class="welcome-title">Xush kelibsiz, {{ request.session.admin_username|default:"Admin" }}! 👋</div>
+    <div class="welcome-sub">Lazzat Restaurant boshqaruv paneli</div>
+  </div>
+  <a href="{% url 'admin_product_add' %}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Yangi mahsulot
+  </a>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card purple animate-in">
+    <div class="stat-icon purple"><i class="fas fa-tags"></i></div>
+    <div class="stat-num" data-target="{{ total_categories }}">0</div>
+    <div class="stat-label">Kategoriyalar</div>
+  </div>
+  <div class="stat-card gold animate-in">
+    <div class="stat-icon gold"><i class="fas fa-utensils"></i></div>
+    <div class="stat-num" data-target="{{ total_products }}">0</div>
+    <div class="stat-label">Mahsulotlar</div>
+  </div>
+  <div class="stat-card green animate-in">
+    <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+    <div class="stat-num" data-target="{{ available_products }}">0</div>
+    <div class="stat-label">Mavjud mahsulotlar</div>
+  </div>
+  <div class="stat-card red animate-in">
+    <div class="stat-icon red"><i class="fas fa-fire"></i></div>
+    <div class="stat-num" data-target="{{ popular_products }}">0</div>
+    <div class="stat-label">Mashhur mahsulotlar</div>
+  </div>
+  <div class="stat-card blue animate-in">
+    <div class="stat-icon blue"><i class="fas fa-envelope"></i></div>
+    <div class="stat-num" data-target="{{ total_messages }}">0</div>
+    <div class="stat-label">Jami xabarlar</div>
+  </div>
+  <div class="stat-card gold animate-in">
+    <div class="stat-icon gold"><i class="fas fa-calendar-check"></i></div>
+    <div class="stat-num" data-target="{{ total_reservations }}">0</div>
+    <div class="stat-label">Jami bronlar</div>
+  </div>
+</div>
+
+<!-- Bottom -->
+<div class="bottom-grid">
+  <!-- Recent products -->
+  <div class="card animate-in">
+    <div class="card-header">
+      <div class="card-title"><i class="fas fa-utensils" style="color:var(--gold)"></i> So'nggi mahsulotlar</div>
+      <a href="{% url 'admin_products' %}" class="btn btn-ghost btn-sm">Hammasi →</a>
+    </div>
+    <div class="card-body" style="padding: 0.75rem 1.5rem;">
+      {% for p in recent_products %}
+      <div class="product-mini" style="animation-delay:{{ forloop.counter0 }}00ms">
+        {% if p.image %}
+        <img src="{{ p.image.url }}" class="product-mini-img" alt="{{ p.name }}">
+        {% else %}
+        <div class="product-mini-placeholder">{{ p.category.icon }}</div>
+        {% endif %}
+        <div>
+          <div class="product-mini-name">{{ p.name }}</div>
+          <div class="product-mini-cat">{{ p.category.name }}</div>
+        </div>
+        <div class="product-mini-price">{{ p.formatted_price }} so'm</div>
+      </div>
+      {% empty %}
+      <div class="empty-state">
+        <div class="empty-icon">🍽️</div>
+        <h3>Hali mahsulot yo'q</h3>
+        <p>Birinchi mahsulotni qo'shing</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Right column -->
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+    <!-- Recent messages -->
+    <div class="card animate-in">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-envelope" style="color:var(--blue)"></i> So'nggi xabarlar
+          {% if unread_messages %}<span class="nav-badge">{{ unread_messages }}</span>{% endif %}
+        </div>
+        <a href="{% url 'admin_messages' %}" class="btn btn-ghost btn-sm">Hammasi →</a>
+      </div>
+      <div class="card-body" style="padding:0.75rem 1.5rem;">
+        {% for msg in recent_messages %}
+        <a href="{% url 'admin_message_detail' msg.pk %}" class="msg-item {% if not msg.is_read %}msg-unread{% endif %}"
+           style="animation-delay:{{ forloop.counter0 }}00ms">
+          {% if not msg.is_read %}<div class="msg-dot"></div>{% endif %}
+          <div class="msg-avatar">{{ msg.full_name|first|upper }}</div>
+          <div>
+            <div class="msg-name">{{ msg.full_name }}</div>
+            <div class="msg-text">{{ msg.message }}</div>
+          </div>
+          <div class="msg-time">{{ msg.created_at|date:"d.m H:i" }}</div>
+        </a>
+        {% empty %}
+        <div class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">✉️</div>
+          <p>Hali xabar yo'q</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card animate-in">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-calendar-check" style="color:var(--gold2)"></i> So'nggi bronlar
+          {% if pending_reservations %}<span class="nav-badge">{{ pending_reservations }}</span>{% endif %}
+        </div>
+        <a href="{% url 'admin_reservations' %}" class="btn btn-ghost btn-sm">Hammasi →</a>
+      </div>
+      <div class="card-body" style="padding:0.75rem 1.5rem;">
+        {% for reservation in recent_reservations %}
+        <a href="{% url 'admin_reservation_detail' reservation.pk %}" class="reservation-item"
+           style="animation-delay:{{ forloop.counter0 }}00ms">
+          <div class="reservation-icon"><i class="fas fa-chair"></i></div>
+          <div>
+            <div class="reservation-name">{{ reservation.full_name }}</div>
+            <div class="reservation-meta">
+              {{ reservation.guest_count }} ta mehmon · {{ reservation.get_seating_preference_display }}<br>
+              {{ reservation.reservation_date|date:"d.m.Y" }} / {{ reservation.reservation_time|time:"H:i" }}
+            </div>
+          </div>
+          <div class="reservation-right">
+            <span class="badge {% if reservation.status == 'confirmed' %}badge-green{% elif reservation.status == 'cancelled' %}badge-red{% elif reservation.status == 'completed' %}badge-blue{% else %}badge-gold{% endif %}">
+              {{ reservation.get_status_display }}
+            </span>
+            <div class="reservation-time">{{ reservation.created_at|date:"d.m H:i" }}</div>
+          </div>
+        </a>
+        {% empty %}
+        <div class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">📅</div>
+          <p>Hali bron yo'q</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Categories chart -->
+    <div class="card animate-in">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-chart-bar" style="color:var(--purple2)"></i> Kategoriyalar</div>
+      </div>
+      <div class="card-body">
+        {% for cat in categories_with_count %}
+        <div class="cat-bar-row" style="animation-delay:{{ forloop.counter0 }}00ms">
+          <div class="cat-bar-name">{{ cat.icon }} {{ cat.name|truncatechars:12 }}</div>
+          <div class="cat-bar-track">
+            <div class="cat-bar-fill" data-width="{% widthratio cat.cnt total_products 100 %}" style="width:0%"></div>
+          </div>
+          <div class="cat-bar-count">{{ cat.cnt }}</div>
+        </div>
+        {% empty %}
+        <div class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">📊</div>
+          <p>Kategoriyalar yo'q</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Quick actions -->
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-title"><i class="fas fa-bolt" style="color:var(--gold)"></i> Tezkor amallar</div>
+  </div>
+  <div class="card-body" style="display:flex;gap:1rem;flex-wrap:wrap;">
+    <a href="{% url 'admin_category_add' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Kategoriya qo'sh
+    </a>
+    <a href="{% url 'admin_product_add' %}" class="btn btn-success">
+      <i class="fas fa-utensils"></i> Mahsulot qo'sh
+    </a>
+    <a href="{% url 'admin_messages' %}" class="btn btn-ghost">
+      <i class="fas fa-envelope"></i> Xabarlar
+      {% if unread_messages %}({{ unread_messages }} yangi){% endif %}
+    </a>
+    <a href="/" target="_blank" class="btn btn-gold">
+      <i class="fas fa-eye"></i> Saytni ko'r
+    </a>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Animate bars
+setTimeout(() => {
+  document.querySelectorAll('.cat-bar-fill').forEach(bar => {
+    bar.style.width = (bar.dataset.width || 0) + '%';
+  });
+}, 400);
+
+// Count up for stats
+document.querySelectorAll('.stat-num[data-target]').forEach(el => {
+  const target = parseInt(el.dataset.target);
+  if (!target) { el.textContent = 0; return; }
+  let cur = 0;
+  const step = Math.max(1, Math.ceil(target / 40));
+  const t = setInterval(() => {
+    cur = Math.min(cur + step, target);
+    el.textContent = cur;
+    if (cur >= target) clearInterval(t);
+  }, 30);
+});
+</script>
+{% endblock %}

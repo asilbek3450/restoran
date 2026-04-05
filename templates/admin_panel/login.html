@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitchen Portal — Kirish</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --bg: #0F0A1E;
+  --purple: #8B5CF6;
+  --purple2: #A78BFA;
+  --gold: #F59E0B;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Animated background */
+.bg-animated {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.18;
+  animation: orbFloat linear infinite;
+}
+
+@keyframes orbFloat {
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(40px,-60px) scale(1.1); }
+  66%  { transform: translate(-30px,40px) scale(0.9); }
+  100% { transform: translate(0,0) scale(1); }
+}
+
+/* Grid pattern */
+.grid-pattern {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(139,92,246,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,92,246,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  z-index: 0;
+}
+
+/* Login box */
+.login-wrap {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  padding: 1.5rem;
+  animation: boxReveal 0.8s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes boxReveal {
+  from { opacity:0; transform:translateY(40px) scale(0.93); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.login-card {
+  background: rgba(22,16,42,0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(139,92,246,0.25);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(139,92,246,0.1) inset;
+}
+
+.login-header { text-align: center; margin-bottom: 2.5rem; }
+
+.login-icon {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--purple), #6D28D9);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin: 0 auto 1.25rem;
+  box-shadow: 0 8px 32px rgba(139,92,246,0.5);
+  animation: iconBounce 3s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+  0%,100% { transform:translateY(0) rotate(0deg); }
+  50%     { transform:translateY(-6px) rotate(5deg); }
+}
+
+.login-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.4rem;
+}
+
+.login-subtitle {
+  font-size: 0.85rem;
+  color: #6B5F8A;
+}
+
+/* Form */
+.form-group { margin-bottom: 1.25rem; }
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #9E8DC7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6B5F8A;
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: color 0.3s;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(15,10,30,0.6);
+  border: 1.5px solid rgba(139,92,246,0.2);
+  border-radius: 12px;
+  padding: 0.85rem 1rem 0.85rem 2.8rem;
+  color: white;
+  font-size: 0.92rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.form-input:focus {
+  border-color: var(--purple);
+  background: rgba(139,92,246,0.06);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+}
+
+.form-input:focus + .input-focus-line { width: 100%; }
+.form-input:focus ~ .input-icon { color: var(--purple2); }
+
+.form-input::placeholder { color: #3D3560; }
+
+/* Password eye */
+.eye-btn {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6B5F8A;
+  cursor: pointer;
+  font-size: 0.88rem;
+  padding: 4px;
+  transition: color 0.3s;
+}
+
+.eye-btn:hover { color: var(--purple2); }
+
+/* Error */
+.error-box {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-size: 0.85rem;
+  color: #FCA5A5;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  20%,60% { transform:translateX(-6px); }
+  40%,80% { transform:translateX(6px); }
+}
+
+/* Submit */
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--purple), #6D28D9);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.95rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 20px rgba(139,92,246,0.4);
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s;
+}
+
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(139,92,246,0.55); }
+.submit-btn:hover::before { left: 160%; }
+.submit-btn:active { transform: scale(0.98); }
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.82rem;
+  color: #6B5F8A;
+}
+
+.back-link a { color: var(--purple2); text-decoration: none; }
+.back-link a:hover { color: #C4B5FD; }
+
+/* Floating particles */
+.particles { position: fixed; inset:0; pointer-events:none; z-index:1; }
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--purple);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFloat linear infinite;
+}
+
+@keyframes particleFloat {
+  0%   { transform:translateY(100vh) scale(0); opacity:0; }
+  10%  { opacity:0.6; }
+  90%  { opacity:0.2; }
+  100% { transform:translateY(-50px) scale(1); opacity:0; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-animated">
+  <div class="orb" style="width:500px;height:500px;background:#8B5CF6;top:-100px;left:-150px;animation-duration:20s;"></div>
+  <div class="orb" style="width:400px;height:400px;background:#EC4899;bottom:-100px;right:-100px;animation-duration:25s;animation-delay:-8s;"></div>
+  <div class="orb" style="width:300px;height:300px;background:#3B82F6;top:50%;left:60%;animation-duration:18s;animation-delay:-12s;"></div>
+</div>
+<div class="grid-pattern"></div>
+<div class="particles" id="particles"></div>
+
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-icon">🔐</div>
+      <h1 class="login-title">Kitchen Portal</h1>
+      <p class="login-subtitle">Maxfiy boshqaruv paneliga kirish</p>
+    </div>
+
+    {% if error %}
+    <div class="error-box">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Foydalanuvchi nomi</label>
+        <div class="input-wrap">
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" name="username" class="form-input"
+                 placeholder="admin" autocomplete="username" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Parol</label>
+        <div class="input-wrap">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" name="password" id="passwordInput" class="form-input"
+                 placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="eye-btn" onclick="togglePassword()">
+            <i class="fas fa-eye" id="eyeIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-sign-in-alt"></i> Kirish
+      </button>
+    </form>
+
+    <div class="back-link">
+      <a href="/">← Saytga qaytish</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function togglePassword() {
+  const inp = document.getElementById('passwordInput');
+  const icon = document.getElementById('eyeIcon');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.className = 'fas fa-eye-slash';
+  } else {
+    inp.type = 'password';
+    icon.className = 'fas fa-eye';
+  }
+}
+
+// Particles
+const container = document.getElementById('particles');
+for (let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random() * 100 + '%';
+  p.style.animationDuration = (Math.random() * 12 + 8) + 's';
+  p.style.animationDelay = (Math.random() * 15) + 's';
+  const size = Math.random() * 3 + 1;
+  p.style.width = p.style.height = size + 'px';
+  const colors = ['#8B5CF6','#EC4899','#3B82F6','#F59E0B'];
+  p.style.background = colors[Math.floor(Math.random() * colors.length)];
+  container.appendChild(p);
+}
+</script>
+</body>
+</html>

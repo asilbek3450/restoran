@@ -1,0 +1,85 @@
+/* Lazzat Restaurant — Custom Admin Styles */
+
+:root {
+  --primary: #C9A84C;
+  --primary-dark: #a8882e;
+  --secondary: #1A1008;
+  --accent: #27AE60;
+  --danger: #C0392B;
+}
+
+/* Header */
+#header {
+  background: linear-gradient(135deg, #1A1008 0%, #2C1F0E 100%) !important;
+  border-bottom: 2px solid rgba(201,168,76,0.3);
+}
+
+#branding h1, #branding h1 a {
+  color: #C9A84C !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+}
+
+#user-tools { color: rgba(255,255,255,0.7) !important; }
+#user-tools a { color: #C9A84C !important; }
+
+/* Navigation */
+.module h2, .module caption { background: #2C1F0E !important; }
+
+div.breadcrumbs {
+  background: #f5edd8 !important;
+  color: #8B7355 !important;
+  border-bottom: 1px solid #e8dcc8 !important;
+}
+
+div.breadcrumbs a { color: #C9A84C !important; }
+
+/* Buttons */
+.button, input[type=submit], input[type=button],
+.submit-row input, a.button {
+  background: linear-gradient(135deg, #C9A84C, #E8C97A) !important;
+  color: #1A1008 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+}
+
+.button:hover { background: #a8882e !important; }
+
+.button.default { background: linear-gradient(135deg, #C9A84C, #E8C97A) !important; }
+
+/* Delete button */
+.deletelink, a.deletelink {
+  background: #C0392B !important;
+  color: white !important;
+  border-radius: 8px !important;
+}
+
+/* Sidebar */
+#nav-sidebar { background: #fdf6e9 !important; }
+
+/* Tables */
+#changelist table thead th {
+  background: #fdf6e9 !important;
+  color: #3D2B1F !important;
+  border-bottom: 2px solid #e8dcc8 !important;
+}
+
+tr:nth-child(even) { background: #fdf6e9 !important; }
+tr:hover { background: #f5edd8 !important; }
+
+/* Dashboard modules */
+.dashboard .module table td a { color: #C9A84C !important; }
+.module { border-radius: 12px !important; overflow: hidden !important; }
+
+/* Forms */
+input[type=text]:focus, input[type=email]:focus,
+input[type=password]:focus, select:focus, textarea:focus {
+  border-color: #C9A84C !important;
+  outline: 2px solid rgba(201,168,76,0.2) !important;
+}
+
+/* Success messages */
+.messagelist .success { background: #d4edda; color: #27AE60; border-left: 4px solid #27AE60; }
+.messagelist .error { background: #f8d7da; color: #C0392B; border-left: 4px solid #C0392B; }

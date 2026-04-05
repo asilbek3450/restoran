@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Lazzat Restaurant{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --gold-dark: #9A7A2E;
+      --dark: #1A1008;
+      --dark2: #2C1F0E;
+      --dark3: #3D2910;
+      --cream: #FDF6E9;
+      --cream2: #F5EDD8;
+      --cream3: #EDE0C4;
+      --red: #C0392B;
+      --green: #27AE60;
+      --blue: #2980B9;
+      --text: #3D2B1F;
+      --muted: #8B7355;
+      --muted2: #A68B6B;
+      --shadow: 0 8px 32px rgba(26, 16, 8, 0.15);
+      --shadow-gold: 0 8px 32px rgba(201, 168, 76, 0.3);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      --spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── PAGE TRANSITION ── */
+    #pageVeil {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .veil-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 40%, var(--gold) 100%);
+      clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+      transition: clip-path .55s cubic-bezier(.76, 0, .24, 1);
+    }
+
+    .veil-logo {
+      position: relative;
+      z-index: 2;
+      font-size: 3rem;
+      opacity: 0;
+      transform: scale(0) rotate(-45deg);
+      transition: all .4s cubic-bezier(.34, 1.56, .64, 1) .15s;
+    }
+
+    .veil-bg.open {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .veil-logo.open {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+
+    .veil-bg.close {
+      clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+      transition: clip-path .55s .05s cubic-bezier(.76, 0, .24, 1);
+    }
+
+    /* ── SCROLL REVEAL ── */
+    [data-anim] {
+      opacity: 0;
+      transition: opacity .7s cubic-bezier(.34, 1.56, .64, 1),
+        transform .7s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    [data-anim="up"] {
+      transform: translateY(50px);
+    }
+
+    [data-anim="down"] {
+      transform: translateY(-40px);
+    }
+
+    [data-anim="left"] {
+      transform: translateX(-60px);
+    }
+
+    [data-anim="right"] {
+      transform: translateX(60px);
+    }
+
+    [data-anim="scale"] {
+      transform: scale(0.8);
+    }
+
+    [data-anim="flip"] {
+      transform: rotateX(30deg) translateY(30px);
+    }
+
+    [data-anim].animated {
+      opacity: 1;
+      transform: none;
+    }
+
+    [data-delay="1"] {
+      transition-delay: .08s;
+    }
+
+    [data-delay="2"] {
+      transition-delay: .16s;
+    }
+
+    [data-delay="3"] {
+      transition-delay: .24s;
+    }
+
+    [data-delay="4"] {
+      transition-delay: .32s;
+    }
+
+    [data-delay="5"] {
+      transition-delay: .40s;
+    }
+
+    [data-delay="6"] {
+      transition-delay: .48s;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(26, 16, 8, 0);
+      backdrop-filter: blur(0px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0);
+      transition: all .5s ease;
+    }
+
+    .navbar.scrolled {
+      background: rgba(26, 16, 8, 0.97);
+      backdrop-filter: blur(24px);
+      border-bottom-color: rgba(201, 168, 76, 0.2);
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      transition: var(--spring);
+    }
+
+    .nav-logo:hover .logo-icon {
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    .logo-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: .5px;
+      display: block;
+    }
+
+    .logo-sub {
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      padding: .5rem 1.1rem;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      right: 50%;
+      height: 2px;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: all .3s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      left: 10%;
+      right: 10%;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--gold);
+      background: rgba(201, 168, 76, 0.08);
+    }
+
+    .nav-cart {
+      position: relative;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light)) !important;
+      color: var(--dark) !important;
+      padding: .5rem 1.2rem !important;
+      border-radius: 10px !important;
+      font-weight: 600 !important;
+      display: flex !important;
+      align-items: center;
+      gap: .5rem;
+      box-shadow: 0 4px 16px rgba(201, 168, 76, 0.3);
+    }
+
+    .nav-cart::after {
+      display: none !important;
+    }
+
+    .nav-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201, 168, 76, 0.5) !important;
+    }
+
+    .cart-badge {
+      background: var(--red);
+      color: white;
+      font-size: .65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 20px;
+      min-width: 18px;
+      text-align: center;
+      animation: badgePop .3s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes badgePop {
+      from {
+        transform: scale(0)
+      }
+
+      to {
+        transform: scale(1)
+      }
+    }
+
+    /* mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      background: rgba(26, 16, 8, 0.98);
+      backdrop-filter: blur(20px);
+      padding: 1rem;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+      z-index: 999;
+      transform: translateY(-20px);
+      opacity: 0;
+      transition: all .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .mobile-menu.open {
+      display: block;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .mobile-menu a {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      padding: .85rem 1rem;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .mobile-menu a:hover {
+      color: var(--gold);
+      background: rgba(201, 168, 76, 0.1);
+      padding-left: 1.4rem;
+    }
+
+    /* ── ALERTS ── */
+    .alert-stack {
+      position: fixed;
+      top: 90px;
+      right: 1.5rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    .alert {
+      padding: 1rem 1.5rem;
+      border-radius: 14px;
+      font-weight: 500;
+      font-size: .9rem;
+      max-width: 360px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      animation: alertSlide .4s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes alertSlide {
+      from {
+        transform: translateX(100%);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    .alert-success {
+      background: var(--green);
+      color: white;
+    }
+
+    .alert-error {
+      background: var(--red);
+      color: white;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255, 255, 255, 0.7);
+      padding: 4rem 0 0;
+      margin-top: 5rem;
+    }
+
+    .footer-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .footer-logo-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--gold);
+      display: block;
+    }
+
+    .footer-desc {
+      margin-top: 1rem;
+      font-size: .9rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .footer-contacts {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .footer-contact-item {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .footer-contact-item i {
+      color: var(--gold);
+      width: 16px;
+    }
+
+    .footer-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-links-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+    }
+
+    .footer-links-list a {
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+      font-size: .9rem;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .footer-links-list a:hover {
+      color: var(--gold);
+      padding-left: 6px;
+    }
+
+    .footer-links-list a i {
+      transition: transform .3s;
+    }
+
+    .footer-links-list a:hover i {
+      transform: translateX(4px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: .75rem;
+      margin-top: .5rem;
+    }
+
+    .social-link {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: var(--spring);
+    }
+
+    .social-link:hover {
+      background: var(--gold);
+      color: var(--dark);
+      border-color: var(--gold);
+      transform: translateY(-4px) rotate(5deg);
+      box-shadow: var(--shadow-gold);
+    }
+
+    .footer-bottom {
+      margin-top: 3rem;
+      border-top: 1px solid rgba(201, 168, 76, 0.1);
+      padding: 1.25rem 2rem;
+      text-align: center;
+      font-size: .82rem;
+      color: var(--muted);
+      max-width: 1300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-primary,
+    .btn-outline,
+    .btn-cart {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--dark);
+      border: none;
+      padding: .85rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: var(--spring);
+      text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(201, 168, 76, 0.5);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: transparent;
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+      padding: .8rem 1.8rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: var(--spring);
+      text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-outline:hover {
+      background: var(--gold);
+      color: var(--dark);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-gold);
+    }
+
+    /* Ripple */
+    .btn-primary::before,
+    .btn-outline::before,
+    .btn-cart::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: inherit;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s ease;
+    }
+
+    .btn-primary:hover::before,
+    .btn-outline:hover::before,
+    .btn-cart:hover::before {
+      transform: scaleX(1);
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--dark2);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 14px;
+      border-left: 4px solid var(--gold);
+      font-size: .9rem;
+      font-weight: 500;
+      box-shadow: var(--shadow);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      transform: translateY(80px) scale(0.9);
+      opacity: 0;
+      transition: all .45s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .toast.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    /* ── PAGE CONTENT ── */
+    .page-content {
+      padding-top: 72px;
+    }
+
+    /* ── EMOJI ANIMATED ── */
+    .emoji-float {
+      display: inline-block;
+      animation: emojiFloat 3s ease-in-out infinite;
+    }
+
+    .emoji-spin {
+      display: inline-block;
+      animation: emojiSpin 4s linear infinite;
+    }
+
+    .emoji-bounce {
+      display: inline-block;
+      animation: emojiBounce 1.5s ease-in-out infinite;
+    }
+
+    .emoji-pulse {
+      display: inline-block;
+      animation: emojiPulse 2s ease-in-out infinite;
+    }
+
+    .emoji-shake {
+      display: inline-block;
+      animation: emojiShake 2.5s ease-in-out infinite;
+    }
+
+    .emoji-swing {
+      display: inline-block;
+      animation: emojiSwing 2s ease-in-out infinite;
+    }
+
+    .emoji-tada {
+      display: inline-block;
+      animation: emojiTada 1.5s ease-in-out infinite;
+    }
+
+    .emoji-rubber {
+      display: inline-block;
+      animation: emojiRubber 2s ease-in-out infinite;
+    }
+
+    @keyframes emojiFloat {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-10px)
+      }
+    }
+
+    @keyframes emojiSpin {
+      from {
+        transform: rotate(0)
+      }
+
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @keyframes emojiBounce {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      40% {
+        transform: translateY(-14px)
+      }
+
+      60% {
+        transform: translateY(-8px)
+      }
+    }
+
+    @keyframes emojiPulse {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.25)
+      }
+    }
+
+    @keyframes emojiShake {
+
+      0%,
+      100% {
+        transform: rotate(0)
+      }
+
+      20% {
+        transform: rotate(-12deg)
+      }
+
+      40% {
+        transform: rotate(12deg)
+      }
+
+      60% {
+        transform: rotate(-8deg)
+      }
+
+      80% {
+        transform: rotate(8deg)
+      }
+    }
+
+    @keyframes emojiSwing {
+
+      0%,
+      100% {
+        transform: rotate(-10deg)
+      }
+
+      50% {
+        transform: rotate(10deg)
+      }
+    }
+
+    @keyframes emojiTada {
+
+      0%,
+      100% {
+        transform: scale(1) rotate(0)
+      }
+
+      10% {
+        transform: scale(.95) rotate(-3deg)
+      }
+
+      30% {
+        transform: scale(1.05) rotate(3deg)
+      }
+
+      50% {
+        transform: scale(1.05) rotate(-3deg)
+      }
+
+      70% {
+        transform: scale(1.05) rotate(3deg)
+      }
+
+      90% {
+        transform: scale(1.05) rotate(-1deg)
+      }
+    }
+
+    @keyframes emojiRubber {
+
+      0%,
+      100% {
+        transform: scaleX(1) scaleY(1)
+      }
+
+      30% {
+        transform: scaleX(1.25) scaleY(.75)
+      }
+
+      40% {
+        transform: scaleX(.75) scaleY(1.25)
+      }
+
+      60% {
+        transform: scaleX(1.15) scaleY(.85)
+      }
+
+      80% {
+        transform: scaleX(.95) scaleY(1.05)
+      }
+    }
+
+    /* ── TEXT ANIMATIONS ── */
+    .text-shimmer {
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 40%, #fff 50%, var(--gold-light) 60%, var(--gold) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: textShimmer 3s linear infinite;
+    }
+
+    @keyframes textShimmer {
+      from {
+        background-position: 200% center
+      }
+
+      to {
+        background-position: -200% center
+      }
+    }
+
+    .text-typewriter {
+      overflow: hidden;
+      border-right: 2px solid var(--gold);
+      white-space: nowrap;
+      animation: typewriter 2s steps(30) 1s both, blink .7s step-end infinite;
+    }
+
+    @keyframes typewriter {
+      from {
+        width: 0
+      }
+
+      to {
+        width: 100%
+      }
+    }
+
+    @keyframes blink {
+      50% {
+        border-color: transparent
+      }
+    }
+
+    /* ── CARD HOVER ── */
+    .hover-lift {
+      transition: var(--spring);
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(26, 16, 8, 0.15);
+    }
+
+    @media(max-width:768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- Page Veil Transition -->
+  <div id="pageVeil">
+    <div class="veil-bg" id="veilBg"></div>
+    <div class="veil-logo" id="veilLogo">🍴</div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <div class="logo-icon">🍴</div>
+        <div class="logo-text">
+          <span class="logo-name">Lazzat</span>
+          <span class="logo-sub">Restaurant</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/" class="{% block nav_home %}{% endblock %}">🏠 Bosh sahifa</a></li>
+        <li><a href="/menu/" class="{% block nav_menu %}{% endblock %}">🍽️ Menyu</a></li>
+        <li><a href="/reservation/" class="{% block nav_reservation %}{% endblock %}">📅 Bron</a></li>
+        <li><a href="/about/" class="{% block nav_about %}{% endblock %}">⭐ Biz haqimizda</a></li>
+        <li><a href="/contact/" class="{% block nav_contact %}{% endblock %}">✉️ Xabar</a></li>
+        <li>
+          <a href="/cart/" class="nav-cart">
+            🛒 Savat
+            <span class="cart-badge" id="cartCount">{{ request.session.cart|length|default:0 }}</span>
+          </a>
+        </li>
+      </ul>
+      <div class="hamburger" id="hamburger" onclick="toggleMobile()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/">🏠 Bosh sahifa</a>
+    <a href="/menu/">🍽️ Menyu</a>
+    <a href="/reservation/">📅 Stol bron qilish</a>
+    <a href="/about/">⭐ Biz haqimizda</a>
+    <a href="/contact/">✉️ Xabar qoldirish</a>
+    <a href="/cart/">🛒 Savat</a>
+  </div>
+
+  {% if messages %}
+  <div class="alert-stack">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {% if 'success' in message.tags %}✅{% else %}❌{% endif %}
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="page-content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer>
+    <div class="footer-inner">
+      <div data-anim="left">
+        <span class="footer-logo-name">🍴 Lazzat</span>
+        <p class="footer-desc">Har bir taomimizda sevgi va an'ana bor. Siz bilan bo'lishga doim tayyormiz.</p>
+        <div class="footer-contacts">
+          <div class="footer-contact-item"><i class="fas fa-phone"></i><span>+998 90 123 45 67</span></div>
+          <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i><span>Toshkent sh., Mustaqillik ko'chasi
+              15</span></div>
+          <div class="footer-contact-item"><i class="fas fa-clock"></i><span>09:00 – 23:00 (Har kuni)</span></div>
+        </div>
+      </div>
+      <div data-anim="up" data-delay="2">
+        <div class="footer-title">Navigatsiya</div>
+        <ul class="footer-links-list">
+          <li><a href="/"><i class="fas fa-chevron-right"></i> Bosh sahifa</a></li>
+          <li><a href="/menu/"><i class="fas fa-chevron-right"></i> Menyu</a></li>
+          <li><a href="/reservation/"><i class="fas fa-chevron-right"></i> Stol bron qilish</a></li>
+          <li><a href="/about/"><i class="fas fa-chevron-right"></i> Biz haqimizda</a></li>
+          <li><a href="/contact/"><i class="fas fa-chevron-right"></i> Xabar qoldirish</a></li>
+        </ul>
+      </div>
+      <div data-anim="right" data-delay="3">
+        <div class="footer-title">Ijtimoiy tarmoqlar</div>
+        <div class="social-links">
+          <a href="https://t.me/lazzat_restaurant" class="social-link" target="_blank"><i
+              class="fab fa-telegram"></i></a>
+          <a href="https://instagram.com/lazzat_restaurant" class="social-link" target="_blank"><i
+              class="fab fa-instagram"></i></a>
+          <a href="tel:+998901234567" class="social-link"><i class="fas fa-phone"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 Lazzat Restaurant — Barcha huquqlar himoyalangan 🍴</div>
+  </footer>
+
+  <script>
+    /* ── PAGE VEIL TRANSITION ── */
+    const veilBg = document.getElementById('veilBg');
+    const veilLogo = document.getElementById('veilLogo');
+
+    // Kirish animatsiyasi
+    window.addEventListener('load', () => {
+      veilBg.classList.add('close');
+      veilLogo.classList.remove('open');
+    });
+
+    // Chiqish animatsiyasi
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      const href = a.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('http') ||
+        a.target === '_blank' || a.hasAttribute('data-add-cart') ||
+        href.startsWith('javascript') || href.startsWith('tel') || href.startsWith('mailto')) return;
+      e.preventDefault();
+      veilBg.classList.remove('close');
+      veilBg.classList.add('open');
+      veilLogo.classList.add('open');
+      setTimeout(() => { window.location.href = href; }, 580);
+    });
+
+    /* ── NAVBAR ── */
+    const navbar = document.getElementById('navbar');
+    const onScroll = () => {
+      if (window.scrollY > 20) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ── MOBILE MENU ── */
+    function toggleMobile() {
+      const m = document.getElementById('mobileMenu');
+      const h = document.getElementById('hamburger');
+      m.classList.toggle('open');
+      h.classList.toggle('open');
+    }
+
+    /* ── SCROLL REVEAL ── */
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          en.target.classList.add('animated');
+          revealObs.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('[data-anim]').forEach(el => revealObs.observe(el));
+
+    /* ── ALERTS AUTO-HIDE ── */
+    document.querySelectorAll('.alert').forEach((el, i) => {
+      setTimeout(() => {
+        el.style.transition = 'all .4s ease';
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(100%)';
+        setTimeout(() => el.remove(), 400);
+      }, 4000 + i * 600);
+    });
+
+    /* ── TOAST ── */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerHTML = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    /* ── CART BADGE ── */
+    function updateCartBadge(n) {
+      const b = document.getElementById('cartCount');
+      if (!b) return;
+      b.textContent = n;
+      b.style.animation = 'none';
+      requestAnimationFrame(() => { b.style.animation = 'badgePop .3s cubic-bezier(.34,1.56,.64,1)'; });
+    }
+
+    /* ── AJAX ADD TO CART ── */
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('[data-add-cart]');
+      if (!btn) return;
+      e.preventDefault();
+      const url = btn.dataset.addCart;
+      const icon = btn.querySelector('i') || btn;
+      // Button wobble
+      btn.style.animation = 'none';
+      btn.style.transform = 'scale(0.9)';
+      setTimeout(() => { btn.style.transform = ''; btn.style.animation = ''; }, 200);
+
+      fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(r => r.json())
+        .then(d => {
+          if (d.success) {
+            updateCartBadge(d.total_items);
+            showToast('🛒 ' + d.message);
+          }
+        })
+        .catch(() => { window.location.href = url; });
+    });
+
+    /* ── COUNTER ANIMATION ── */
+    function countUp(el, target, duration = 1200) {
+      const start = Date.now();
+      const tick = () => {
+        const p = Math.min((Date.now() - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - p, 4);
+        el.textContent = Math.round(ease * target);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      tick();
+    }
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

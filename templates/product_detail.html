@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — Lazzat Restaurant{% endblock %}
+{% block nav_menu %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+  .detail-section {
+    max-width: 1100px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .85rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    animation: breadIn .5s ease both;
+  }
+
+  @keyframes breadIn {
+    from {
+      opacity: 0;
+      transform: translateX(-15px)
+    }
+
+    to {
+      opacity: 1;
+      transform: none
+    }
+  }
+
+  .breadcrumb a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: .2s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--gold-dark);
+  }
+
+  .breadcrumb span {
+    animation: emojiSpin 4s linear infinite;
+    display: inline-block;
+    font-size: .7rem;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    margin-bottom: 4rem;
+  }
+
+  /* Image */
+  .detail-img-wrap {
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, var(--cream2), var(--cream));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: imgReveal .8s cubic-bezier(.34, 1.56, .64, 1) both;
+  }
+
+  @keyframes imgReveal {
+    from {
+      opacity: 0;
+      transform: scale(.9) rotate(-3deg)
+    }
+
+    to {
+      opacity: 1;
+      transform: none
+    }
+  }
+
+  .detail-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .8s ease;
+  }
+
+  .detail-img-wrap:hover img {
+    transform: scale(1.05);
+  }
+
+  .detail-img-placeholder {
+    font-size: 8rem;
+    animation: emojiFloat 4s ease-in-out infinite;
+  }
+
+  .detail-badge {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.25rem;
+    background: var(--red);
+    color: white;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: .4rem 1rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    animation: badgePop .5s cubic-bezier(.34, 1.56, .64, 1) .5s both;
+  }
+
+  /* Info */
+  .detail-info {
+    animation: infoReveal .8s cubic-bezier(.34, 1.56, .64, 1) .2s both;
+  }
+
+  @keyframes infoReveal {
+    from {
+      opacity: 0;
+      transform: translateX(40px)
+    }
+
+    to {
+      opacity: 1;
+      transform: none
+    }
+  }
+
+  .detail-category {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: rgba(201, 168, 76, .1);
+    color: var(--gold);
+    padding: .4rem 1rem;
+    border-radius: 50px;
+    font-size: .78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(201, 168, 76, .2);
+    transition: var(--spring);
+  }
+
+  .detail-category:hover {
+    background: rgba(201, 168, 76, .2);
+    transform: scale(1.05);
+  }
+
+  .detail-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .detail-price {
+    display: flex;
+    align-items: baseline;
+    gap: .5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .price-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--green);
+    animation: priceIn .6s cubic-bezier(.34, 1.56, .64, 1) .6s both;
+  }
+
+  @keyframes priceIn {
+    from {
+      opacity: 0;
+      transform: scale(.6)
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1)
+    }
+  }
+
+  .price-currency {
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .detail-desc {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    border-left: 3px solid var(--gold);
+    padding-left: 1.25rem;
+    position: relative;
+  }
+
+  .detail-desc::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--gold), var(--gold-light));
+    border-radius: 3px;
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* Related */
+  .related-section {
+    max-width: 1100px;
+    margin: 0 auto 4rem;
+    padding: 0 2rem;
+  }
+
+  .related-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: .75rem;
+    border-bottom: 2px solid var(--cream2);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .related-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
+    transition: var(--spring);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .related-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .12);
+  }
+
+  .related-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    transition: transform .5s;
+  }
+
+  .related-card:hover .related-img {
+    transform: scale(1.08);
+  }
+
+  .related-placeholder {
+    width: 100%;
+    height: 140px;
+    background: var(--cream2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    transition: var(--spring);
+  }
+
+  .related-card:hover .related-placeholder {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .related-body {
+    padding: 1rem;
+  }
+
+  .related-name {
+    font-weight: 600;
+    font-size: .95rem;
+    color: var(--dark);
+    margin-bottom: .25rem;
+    transition: color .3s;
+  }
+
+  .related-card:hover .related-name {
+    color: var(--gold-dark);
+  }
+
+  .related-price {
+    color: var(--green);
+    font-weight: 700;
+    font-size: .9rem;
+  }
+
+  @media(max-width:768px) {
+    .detail-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="detail-section">
+  <div class="breadcrumb">
+    <a href="/">🏠 Home</a>
+    <span>›</span>
+    <a href="/menu/">Menu</a>
+    <span>›</span>
+    <a href="/menu/?category={{ product.category.id }}">{{ product.category.icon }} {{ product.category.name }}</a>
+    <span>›</span>
+    <span style="color:var(--text);font-style:normal;">{{ product.name }}</span>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-img-wrap">
+      {% if product.is_popular %}<div class="detail-badge">🔥 Popular</div>{% endif %}
+      {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      {% else %}
+      <div class="detail-img-placeholder">{{ product.category.icon }}</div>
+      {% endif %}
+    </div>
+
+    <div class="detail-info">
+      <div class="detail-category">{{ product.category.icon }} {{ product.category.name }}</div>
+      <h1 class="detail-name">{{ product.name }} <span class="emoji-pulse">✨</span></h1>
+      <div class="detail-price">
+        <span class="price-big">{{ product.formatted_price }}</span>
+        <span class="price-currency">so'm</span>
+      </div>
+      {% if product.description %}
+      <p class="detail-desc">{{ product.description }}</p>
+      {% endif %}
+      <div class="detail-actions" data-anim="up">
+        <a href="/cart/add/{{ product.pk }}/" class="btn-primary" data-add-cart="/cart/add/{{ product.pk }}/">
+          <span class="emoji-bounce">🛒</span> Savatga qo'shish
+        </a>
+        <a href="/menu/?category={{ product.category.id }}" class="btn-outline">
+          ← Orqaga
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if related %}
+<section class="related-section">
+  <div class="related-title" data-anim="left">
+    <span class="emoji-swing">{{ product.category.icon }}</span> Shuningdek ko'ring
+  </div>
+  <div class="related-grid">
+    {% for item in related %}
+    <a href="/product/{{ item.pk }}/" class="related-card" data-anim="scale" data-delay="{{ forloop.counter }}">
+      {% if item.image %}
+      <img src="{{ item.image.url }}" alt="{{ item.name }}" class="related-img">
+      {% else %}
+      <div class="related-placeholder">{{ item.category.icon }}</div>
+      {% endif %}
+      <div class="related-body">
+        <div class="related-name">{{ item.name }}</div>
+        <div class="related-price">{{ item.formatted_price }} so'm</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

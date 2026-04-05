@@ -1,0 +1,222 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Mahsulotlar{% endblock %}
+{% block nav_products %}active{% endblock %}
+{% block page_title %}Mahsulotlar{% endblock %}
+{% block breadcrumb %}Mahsulotlar{% endblock %}
+
+{% block extra_css %}
+<style>
+.filter-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-wrap i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3);
+  font-size: 0.85rem;
+}
+
+.search-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1rem 0.65rem 2.5rem;
+  color: var(--text);
+  font-size: 0.88rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.search-input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(139,92,246,0.15); }
+
+.product-image {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.product-placeholder {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;" class="animate-in">
+  <div>
+    <h2 style="font-size:1.4rem;font-weight:800;color:white;">Mahsulotlar</h2>
+    <p style="color:var(--text3);font-size:0.85rem;margin-top:2px;">{{ products|length }} ta mahsulot topildi</p>
+  </div>
+  <a href="{% url 'admin_product_add' %}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Yangi mahsulot
+  </a>
+</div>
+
+<!-- Filter bar -->
+<form method="get" class="filter-bar animate-in">
+  <div class="search-wrap">
+    <i class="fas fa-search"></i>
+    <input type="text" name="search" class="search-input"
+           placeholder="Mahsulot nomi bo'yicha qidirish..." value="{{ search }}">
+  </div>
+  <select name="category" class="form-control" style="width:auto;min-width:160px;">
+    <option value="">Barcha kategoriyalar</option>
+    {% for cat in categories %}
+    <option value="{{ cat.id }}" {% if cat_filter == cat.id|stringformat:'s' %}selected{% endif %}>
+      {{ cat.icon }} {{ cat.name }}
+    </option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-ghost">
+    <i class="fas fa-filter"></i> Filtr
+  </button>
+  {% if search or cat_filter %}
+  <a href="{% url 'admin_products' %}" class="btn btn-danger btn-sm">
+    <i class="fas fa-times"></i> Tozalash
+  </a>
+  {% endif %}
+</form>
+
+<div class="card animate-in">
+  {% if products %}
+  <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Rasm</th>
+          <th>Nomi</th>
+          <th>Kategoriya</th>
+          <th>Narxi</th>
+          <th>Holati</th>
+          <th>Mashhur</th>
+          <th>Amallar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr class="animate-in" style="animation-delay:{{ forloop.counter0 }}0ms">
+          <td>
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}">
+            {% else %}
+            <div class="product-placeholder">{{ product.category.icon }}</div>
+            {% endif %}
+          </td>
+          <td>
+            <div style="font-weight:700;color:white;">{{ product.name }}</div>
+            {% if product.description %}
+            <div style="font-size:0.75rem;color:var(--text3);margin-top:2px;">{{ product.description|truncatechars:50 }}</div>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge badge-purple">{{ product.category.icon }} {{ product.category.name }}</span>
+          </td>
+          <td>
+            <span style="font-weight:700;color:#10B981;">{{ product.formatted_price }} so'm</span>
+          </td>
+          <td>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <label class="toggle" title="Mavjudligini o'zgartirish">
+                <input type="checkbox" id="toggle-{{ product.pk }}"
+                       {% if product.is_available %}checked{% endif %}
+                       onchange="toggleAvailability({{ product.pk }}, this)">
+                <span class="toggle-slider"></span>
+              </label>
+              <span id="avail-{{ product.pk }}"
+                    class="badge {% if product.is_available %}badge-green{% else %}badge-red{% endif %}">
+                {% if product.is_available %}✓ Mavjud{% else %}✗ Yopiq{% endif %}
+              </span>
+            </div>
+          </td>
+          <td>
+            {% if product.is_popular %}
+            <span class="badge badge-gold">🔥 Ha</span>
+            {% else %}
+            <span class="badge" style="background:rgba(255,255,255,0.05);color:var(--text3);border:1px solid var(--border);">Yo'q</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:0.5rem;">
+              <a href="/product/{{ product.pk }}/" target="_blank"
+                 class="btn btn-ghost btn-sm btn-icon" title="Ko'rish">
+                <i class="fas fa-eye"></i>
+              </a>
+              <a href="{% url 'admin_product_edit' product.pk %}"
+                 class="btn btn-ghost btn-sm btn-icon" title="Tahrirlash">
+                <i class="fas fa-edit"></i>
+              </a>
+              <button onclick="confirmDelete('{{ product.name }}', 'del-prod-{{ product.pk }}')"
+                      class="btn btn-danger btn-sm btn-icon" title="O'chirish">
+                <i class="fas fa-trash"></i>
+              </button>
+              <form id="del-prod-{{ product.pk }}" method="post"
+                    action="{% url 'admin_product_delete' product.pk %}" style="display:none;">
+                {% csrf_token %}
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🍽️</div>
+    <h3>Mahsulotlar topilmadi</h3>
+    <p>{% if search %}Qidiruv natijasi bo'sh{% else %}Birinchi mahsulotni qo'shing{% endif %}</p>
+    {% if not search %}
+    <a href="{% url 'admin_product_add' %}" class="btn btn-primary" style="margin-top:1rem;">
+      <i class="fas fa-plus"></i> Qo'shish
+    </a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box" style="text-align:center;">
+    <div style="font-size:3rem;margin-bottom:1rem;">🗑️</div>
+    <h3 style="color:white;font-size:1.2rem;margin-bottom:0.5rem;">O'chirishni tasdiqlang</h3>
+    <p style="color:var(--text2);font-size:0.88rem;margin-bottom:1.5rem;">
+      "<span id="deleteTargetName"></span>" o'chiriladi. Bu amal ortga qaytarib bo'lmaydi.
+    </p>
+    <input type="hidden" id="deleteFormId">
+    <div style="display:flex;gap:0.75rem;justify-content:center;">
+      <button onclick="closeDeleteModal()" class="btn btn-ghost">Bekor qilish</button>
+      <button id="confirmDeleteBtn" class="btn btn-danger">Ha, o'chir</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

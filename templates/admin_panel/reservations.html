@@ -1,0 +1,223 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Bronlar{% endblock %}
+{% block nav_reservations %}active{% endblock %}
+{% block page_title %}Bronlar{% endblock %}
+{% block breadcrumb %}Bronlar{% endblock %}
+
+{% block extra_css %}
+<style>
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.toolbar-copy h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: white;
+}
+
+.toolbar-copy p {
+  color: var(--text3);
+  font-size: 0.85rem;
+  margin-top: 3px;
+}
+
+.filter-card {
+  margin-bottom: 1.25rem;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 220px auto;
+  gap: 0.9rem;
+}
+
+.reservation-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+  animation: animIn 0.5s ease both;
+}
+
+.reservation-card:hover {
+  transform: translateX(4px);
+  border-color: var(--border2);
+  background: var(--card2);
+}
+
+.reservation-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(245,158,11,0.22), rgba(252,211,77,0.12));
+  color: var(--gold2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.reservation-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.reservation-name {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: white;
+}
+
+.reservation-phone {
+  font-size: 0.8rem;
+  color: var(--text2);
+  margin-top: 3px;
+}
+
+.reservation-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  font-size: 0.74rem;
+  color: var(--text2);
+}
+
+.reservation-note {
+  margin-top: 0.8rem;
+  color: var(--text3);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.reservation-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.reservation-time {
+  color: var(--text3);
+  font-size: 0.76rem;
+  text-align: right;
+}
+
+@media (max-width: 920px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-card {
+    flex-direction: column;
+  }
+
+  .reservation-right {
+    align-items: flex-start;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="toolbar animate-in">
+  <div class="toolbar-copy">
+    <h2>Bronlar</h2>
+    <p>{{ reservation_count }} ta yozuv topildi{% if sidebar_pending_reservations %} · {{ sidebar_pending_reservations }} ta kutilayotgan bron{% endif %}</p>
+  </div>
+  <a href="{% url 'reservation' %}" target="_blank" class="btn btn-gold">
+    <i class="fas fa-external-link-alt"></i> Bron sahifasini ko'rish
+  </a>
+</div>
+
+<div class="card filter-card animate-in">
+  <div class="card-body">
+    <form method="get" class="filter-row">
+      <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Ism, telefon yoki izoh bo'yicha qidiring">
+      <select name="status" class="form-control">
+        <option value="">Barcha statuslar</option>
+        {% for value, label in statuses %}
+        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-search"></i> Filtrlash
+      </button>
+    </form>
+  </div>
+</div>
+
+{% if reservations %}
+  {% for reservation in reservations %}
+  <a href="{% url 'admin_reservation_detail' reservation.pk %}" class="reservation-card"
+     style="animation-delay:{{ forloop.counter0 }}0ms">
+    <div class="reservation-icon"><i class="fas fa-calendar-check"></i></div>
+
+    <div class="reservation-content">
+      <div class="reservation-name">{{ reservation.full_name }}</div>
+      <div class="reservation-phone">{{ reservation.phone_number }}</div>
+
+      <div class="reservation-meta">
+        <span class="meta-pill"><i class="fas fa-users"></i> {{ reservation.guest_count }} ta mehmon</span>
+        <span class="meta-pill"><i class="fas fa-chair"></i> {{ reservation.get_seating_preference_display }}</span>
+        <span class="meta-pill"><i class="fas fa-glass-cheers"></i> {{ reservation.get_occasion_display }}</span>
+        {% if reservation.is_contacted %}
+        <span class="meta-pill"><i class="fas fa-phone-volume"></i> Bog'lanilgan</span>
+        {% endif %}
+      </div>
+
+      {% if reservation.special_requests %}
+      <div class="reservation-note">{{ reservation.special_requests|truncatechars:160 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="reservation-right">
+      <span class="badge {% if reservation.status == 'confirmed' %}badge-green{% elif reservation.status == 'cancelled' %}badge-red{% elif reservation.status == 'completed' %}badge-blue{% else %}badge-gold{% endif %}">
+        {{ reservation.get_status_display }}
+      </span>
+      <div class="reservation-time">
+        {{ reservation.reservation_date|date:"d.m.Y" }}<br>
+        {{ reservation.reservation_time|time:"H:i" }}
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+{% else %}
+<div class="card animate-in">
+  <div class="empty-state">
+    <div class="empty-icon">📅</div>
+    <h3>Bronlar topilmadi</h3>
+    <p>Filtrlarni o'zgartiring yoki mijozlar yangi bron yuborishini kuting</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

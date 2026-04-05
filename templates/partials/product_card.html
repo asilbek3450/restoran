@@ -1,0 +1,29 @@
+<div class="product-card" style="animation-delay: {{ forloop.counter0|add:0 }}00ms">
+  {% if product.is_popular %}
+  <div class="product-badge">🔥 Popular</div>
+  {% endif %}
+
+  <a href="/product/{{ product.pk }}/">
+    {% if product.image %}
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+    {% else %}
+    <div class="product-img-placeholder">{{ product.category.icon }}</div>
+    {% endif %}
+  </a>
+
+  <div class="product-body">
+    <a href="/product/{{ product.pk }}/" class="product-name">{{ product.name }}</a>
+    {% if product.description %}
+    <p class="product-desc">{{ product.description }}</p>
+    {% endif %}
+    <div class="product-footer">
+      <div class="product-price">
+        {{ product.formatted_price }}
+        <span class="price-sub">so'm</span>
+      </div>
+      <a href="/cart/add/{{ product.pk }}/" class="btn-cart" data-add-cart="/cart/add/{{ product.pk }}/">
+        🛒 Qo'sh
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% block title %}Xabarlar{% endblock %}
+{% block nav_messages %}active{% endblock %}
+{% block page_title %}Xabarlar{% endblock %}
+{% block breadcrumb %}Xabarlar{% endblock %}
+
+{% block extra_css %}
+<style>
+.msg-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  transition: var(--transition);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  animation: animIn 0.5s ease both;
+}
+
+.msg-card:hover {
+  border-color: var(--border2);
+  transform: translateX(4px);
+  background: var(--card2);
+}
+
+.msg-card.unread {
+  border-left: 3px solid var(--purple);
+  background: linear-gradient(135deg, rgba(139,92,246,0.05), transparent);
+}
+
+.msg-card.unread::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--purple), transparent);
+}
+
+.msg-avatar-big {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(139,92,246,0.3);
+}
+
+.msg-content { flex: 1; min-width: 0; }
+.msg-sender  { font-weight: 700; color: white; font-size: 0.95rem; }
+.msg-preview { font-size: 0.83rem; color: var(--text2); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.msg-meta    { display: flex; align-items: center; gap: 0.5rem; margin-top: 4px; }
+
+.msg-right   { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; flex-shrink: 0; }
+.msg-time    { font-size: 0.75rem; color: var(--text3); }
+
+.new-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--purple);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;" class="animate-in">
+  <div>
+    <h2 style="font-size:1.4rem;font-weight:800;color:white;">Xabarlar</h2>
+    <p style="color:var(--text3);font-size:0.85rem;margin-top:2px;">
+      {{ msgs|length }} ta xabar
+      {% if unread %} · <span style="color:var(--purple2)">{{ unread }} ta yangi</span>{% endif %}
+    </p>
+  </div>
+</div>
+
+{% if msgs %}
+  {% for msg in msgs %}
+  <a href="{% url 'admin_message_detail' msg.pk %}"
+     class="msg-card {% if not msg.is_read %}unread{% endif %}"
+     style="animation-delay:{{ forloop.counter0 }}0ms">
+    {% if not msg.is_read %}<div class="new-dot"></div>{% endif %}
+    <div class="msg-avatar-big">{{ msg.full_name|first|upper }}</div>
+    <div class="msg-content">
+      <div class="msg-sender">{{ msg.full_name }}</div>
+      <div class="msg-preview">{{ msg.message }}</div>
+      <div class="msg-meta">
+        {% if not msg.is_read %}
+        <span class="badge badge-purple" style="font-size:0.65rem;padding:1px 6px;">YANGI</span>
+        {% else %}
+        <span class="badge" style="background:rgba(255,255,255,0.05);color:var(--text3);border:1px solid var(--border);font-size:0.65rem;">O'qildi</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="msg-right">
+      <div class="msg-time">{{ msg.created_at|date:"d.m.Y" }}</div>
+      <div class="msg-time">{{ msg.created_at|date:"H:i" }}</div>
+      <i class="fas fa-chevron-right" style="color:var(--text3);font-size:0.75rem;"></i>
+    </div>
+  </a>
+  {% endfor %}
+
+{% else %}
+<div class="card animate-in">
+  <div class="empty-state">
+    <div class="empty-icon">✉️</div>
+    <h3>Hali xabar yo'q</h3>
+    <p>Mijozlar saytdan xabar qoldirganda bu yerda ko'rinadi</p>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
