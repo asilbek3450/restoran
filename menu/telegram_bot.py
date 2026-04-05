@@ -12,7 +12,12 @@ def send_telegram_message(text):
         token = settings.TELEGRAM_BOT_TOKEN
         chat_id = settings.TELEGRAM_ADMIN_CHAT_ID
 
-        if token == 'YOUR_BOT_TOKEN_HERE' or chat_id == 'YOUR_CHAT_ID_HERE':
+        if (
+            not token
+            or not chat_id
+            or token == 'YOUR_BOT_TOKEN_HERE'
+            or chat_id == 'YOUR_CHAT_ID_HERE'
+        ):
             print("⚠️  Telegram token yoki chat_id sozlanmagan!")
             return False
 
@@ -45,7 +50,7 @@ def notify_new_message(contact_message):
 
 def notify_new_reservation(reservation):
     """Yangi bron kelganda adminni xabardor qilish"""
-    special_requests = reservation.special_requests or "Yoq"
+    special_requests = reservation.special_requests or "Yo'q"
     text = (
         f"📅 <b>Yangi bron yaratildi!</b>\n\n"
         f"👤 <b>Mijoz:</b> {escape(reservation.full_name)}\n"
