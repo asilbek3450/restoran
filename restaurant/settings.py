@@ -71,10 +71,13 @@ IS_TESTING = 'test' in sys.argv
 
 ALLOWED_HOSTS = env_list(
     'ALLOWED_HOSTS',
-    ['127.0.0.1', 'localhost'],
+    ['127.0.0.1', 'localhost', 'food.mirolimov.uz', '.railway.app'],
 )
 
-CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS', [])
+CSRF_TRUSTED_ORIGINS = env_list(
+    'CSRF_TRUSTED_ORIGINS',
+    ['https://food.mirolimov.uz', 'https://*.railway.app'],
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -83,6 +86,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'menu',
     'orders',
 ]

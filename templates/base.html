@@ -1,9 +1,70 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uz">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO & Social Media Meta Tags -->
+  <meta name="description" content="Lazzat Restaurant - Toshkentdagi eng mazali va sifatli taomlar maskani. Stol band qilish va menyu bilan tanishish.">
+  <meta name="keywords" content="Lazzat, Restaurant, Toshkent, milliy taomlar, yevropa taomlari, bron qilish, food delivery">
+  <meta name="author" content="Lazzat Team">
+  <meta name="robots" content="index, follow">
+  
+  <!-- OpenGraph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://food.mirolimov.uz/">
+  <meta property="og:title" content="Lazzat Restaurant — Premium Catering Experience">
+  <meta property="og:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
+  <meta property="og:image" content="https://food.mirolimov.uz/static/images/og-image.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://food.mirolimov.uz/">
+  <meta property="twitter:title" content="Lazzat Restaurant — Premium Catering Experience">
+  <meta property="twitter:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
+  <meta property="twitter:image" content="https://food.mirolimov.uz/static/images/og-image.jpg">
+
+  <!-- Structured Data (Schema.org) for Restaurant -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "Lazzat Restaurant",
+    "image": "https://food.mirolimov.uz/static/images/logo.png",
+    "@id": "https://food.mirolimov.uz",
+    "url": "https://food.mirolimov.uz",
+    "telephone": "+998901234567",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Mustaqillik ko'chasi 15",
+      "addressLocality": "Toshkent",
+      "addressRegion": "UZ",
+      "postalCode": "100000",
+      "addressCountry": "UZ"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 41.311081,
+      "longitude": 69.240562
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "09:00",
+      "closes": "23:00"
+    }
+  }
+  </script>
   <title>{% block title %}Lazzat Restaurant{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
@@ -908,6 +969,7 @@
     }
   </style>
   {% block extra_css %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'css/enhanced.css' %}">
 </head>
 
 <body>

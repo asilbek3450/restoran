@@ -1,8 +1,17 @@
-from django.urls import path
+from django.urls import path, re_path
 from django.conf import settings
-from django.conf.urls.static import static
+from django.views.static import serve
 from menu import views as menu_views
 from menu import admin_views
+from django.contrib.sitemaps.views import sitemap
+from menu.sitemaps import StaticViewSitemap, ProductSitemap, CategorySitemap
+from django.http import HttpResponse
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'products': ProductSitemap,
+    'categories': CategorySitemap,
+}
 
 urlpatterns = [
     # Asosiy sahifalar
@@ -12,12 +21,18 @@ urlpatterns = [
     path('reservation/', menu_views.reservation, name='reservation'),
     path('contact/', menu_views.contact, name='contact'),
     path('product/<int:pk>/', menu_views.product_detail, name='product_detail'),
+    
     # Savat
     path('cart/', menu_views.cart, name='cart'),
     path('cart/add/<int:pk>/', menu_views.add_to_cart, name='add_to_cart'),
     path('cart/remove/<int:pk>/', menu_views.remove_from_cart, name='remove_from_cart'),
     path('cart/clear/', menu_views.clear_cart, name='clear_cart'),
     path('order/confirm/', menu_views.order_confirm, name='order_confirm'),
+    
+    # SEO
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', lambda r: HttpResponse("User-agent: *\nAllow: /\nSitemap: https://food.mirolimov.uz/sitemap.xml", content_type="text/plain")),
+    
     # MAXFIY ADMIN PANEL
     path('kitchen-portal/', admin_views.admin_login, name='admin_login'),
     path('kitchen-portal/logout/', admin_views.admin_logout, name='admin_logout'),
@@ -37,4 +52,9 @@ urlpatterns = [
     path('kitchen-portal/reservations/', admin_views.admin_reservations, name='admin_reservations'),
     path('kitchen-portal/reservations/<int:pk>/', admin_views.admin_reservation_detail, name='admin_reservation_detail'),
     path('kitchen-portal/reservations/delete/<int:pk>/', admin_views.admin_reservation_delete, name='admin_reservation_delete'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+# O'zgarish: Railway (production) muhitida ham media fayllarni ko'rsatish uchun 
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]

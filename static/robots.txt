@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://food.mirolimov.uz/sitemap.xml
