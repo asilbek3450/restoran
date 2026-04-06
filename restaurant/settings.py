@@ -67,7 +67,7 @@ SECRET_KEY = os.getenv(
 )
 
 # ── PRODUCTION SECURITY ──
-DEBUG = env_bool('DEBUG', False)
+DEBUG = True
 
 ALLOWED_HOSTS = env_list(
     'ALLOWED_HOSTS',
