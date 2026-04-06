@@ -1,6 +1,36 @@
 {% extends 'base.html' %}
+{% block og_title %}{{ product.name }} — Lazzat Restaurant{% endblock %}
+{% block gsc_verification %}{% endblock %}
 {% block title %}{{ product.name }} — Lazzat Restaurant{% endblock %}
 {% block nav_menu %}active{% endblock %}
+
+{% block extra_head %}
+<!-- Structured Data (Schema.org) for Product -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ product.name }}",
+  "image": [
+    "https://restoran.mirolimov.uz{{ product.image.url }}"
+  ],
+  "description": "{{ product.description|escapejs }}",
+  "sku": "SKU-{{ product.id }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "Lazzat Restaurant"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://restoran.mirolimov.uz{{ request.path }}",
+    "priceCurrency": "UZS",
+    "price": "{{ product.price }}",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition"
+  }
+}
+</script>
+{% endblock %}
 
 {% block extra_css %}
 <style>

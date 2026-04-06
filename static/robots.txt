@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://food.mirolimov.uz/sitemap.xml
+Sitemap: https://restoran.mirolimov.uz/sitemap.xml

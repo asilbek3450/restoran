@@ -23,7 +23,7 @@ class ProductSitemap(Sitemap):
         return obj.created_at
 
     def location(self, obj):
-        return f'/product/{obj.pk}/'
+        return reverse('product_detail', kwargs={'slug': obj.slug})
 
 class CategorySitemap(Sitemap):
     changefreq = "weekly"
@@ -33,4 +33,4 @@ class CategorySitemap(Sitemap):
         return Category.objects.all()
 
     def location(self, obj):
-        return f'/menu/?category={obj.pk}'
+        return reverse('menu_category', kwargs={'slug': obj.slug})

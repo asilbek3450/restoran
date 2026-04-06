@@ -17,10 +17,11 @@ urlpatterns = [
     # Asosiy sahifalar
     path('', menu_views.home, name='home'),
     path('menu/', menu_views.menu, name='menu'),
+    path('menu/<slug:slug>/', menu_views.menu, name='menu_category'),
     path('about/', menu_views.about, name='about'),
     path('reservation/', menu_views.reservation, name='reservation'),
     path('contact/', menu_views.contact, name='contact'),
-    path('product/<int:pk>/', menu_views.product_detail, name='product_detail'),
+    path('product/<slug:slug>/', menu_views.product_detail, name='product_detail'),
     
     # Savat
     path('cart/', menu_views.cart, name='cart'),
@@ -31,7 +32,7 @@ urlpatterns = [
     
     # SEO
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('robots.txt', lambda r: HttpResponse("User-agent: *\nAllow: /\nSitemap: https://food.mirolimov.uz/sitemap.xml", content_type="text/plain")),
+    path('robots.txt', lambda r: HttpResponse("User-agent: *\nAllow: /\nSitemap: https://restoran.mirolimov.uz/sitemap.xml", content_type="text/plain")),
     
     # MAXFIY ADMIN PANEL
     path('kitchen-portal/', admin_views.admin_login, name='admin_login'),

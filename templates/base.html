@@ -6,25 +6,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
+  <!-- Google Search Console Verification (Sizga berilgan kodni shu yerga qo'ying) -->
+  {% block gsc_verification %}{% endblock %}
+
   <!-- SEO & Social Media Meta Tags -->
-  <meta name="description" content="Lazzat Restaurant - Toshkentdagi eng mazali va sifatli taomlar maskani. Stol band qilish va menyu bilan tanishish.">
-  <meta name="keywords" content="Lazzat, Restaurant, Toshkent, milliy taomlar, yevropa taomlari, bron qilish, food delivery">
+  <meta name="description" content="Lazzat Restaurant - Toshkentdagi eng mazali va sifatli taomlar maskani. O'zbek va Yevropa taomlari, stol band qilish va menyu bilan tanishish.">
+  <meta name="keywords" content="Lazzat, Restaurant Toshkent, milliy taomlar, yevropa taomlari, bron qilish, food delivery Tashkent, restoran bron qilish">
   <meta name="author" content="Lazzat Team">
   <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://restoran.mirolimov.uz{{ request.path }}">
   
   <!-- OpenGraph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://food.mirolimov.uz/">
-  <meta property="og:title" content="Lazzat Restaurant — Premium Catering Experience">
+  <meta property="og:site_name" content="Lazzat Restaurant">
+  <meta property="og:url" content="https://restoran.mirolimov.uz{{ request.path }}">
+  <meta property="og:title" content="{% block og_title %}Lazzat Restaurant — Premium Dining & Catering{% endblock %}">
   <meta property="og:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
-  <meta property="og:image" content="https://food.mirolimov.uz/static/images/og-image.jpg">
+  <meta property="og:image" content="https://restoran.mirolimov.uz/static/images/og-image.jpg">
 
   <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://food.mirolimov.uz/">
-  <meta property="twitter:title" content="Lazzat Restaurant — Premium Catering Experience">
-  <meta property="twitter:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
-  <meta property="twitter:image" content="https://food.mirolimov.uz/static/images/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@lazzat_restoran">
+  <meta name="twitter:url" content="https://restoran.mirolimov.uz{{ request.path }}">
+  <meta name="twitter:title" content="Lazzat Restaurant — Premium Dining & Catering">
+  <meta name="twitter:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
+  <meta name="twitter:image" content="https://restoran.mirolimov.uz/static/images/og-image.jpg">
 
   <!-- Structured Data (Schema.org) for Restaurant -->
   <script type="application/ld+json">
@@ -32,10 +38,12 @@
     "@context": "https://schema.org",
     "@type": "Restaurant",
     "name": "Lazzat Restaurant",
-    "image": "https://food.mirolimov.uz/static/images/logo.png",
-    "@id": "https://food.mirolimov.uz",
-    "url": "https://food.mirolimov.uz",
+    "image": "https://restoran.mirolimov.uz/static/images/logo.png",
+    "@id": "https://restoran.mirolimov.uz",
+    "url": "https://restoran.mirolimov.uz",
     "telephone": "+998901234567",
+    "servesCuisine": ["Uzbek", "European"],
+    "priceRange": "$$",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Mustaqillik ko'chasi 15",
@@ -52,17 +60,15 @@
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
       ],
       "opens": "09:00",
       "closes": "23:00"
-    }
+    },
+    "sameAs": [
+      "https://t.me/lazzat_restaurant",
+      "https://instagram.com/lazzat_restaurant"
+    ]
   }
   </script>
   <title>{% block title %}Lazzat Restaurant{% endblock %}</title>

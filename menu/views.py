@@ -15,26 +15,28 @@ def home(request):
     })
 
 
-def menu(request):
+def menu(request, slug=None):
     categories = Category.objects.prefetch_related('products')
-    selected_category = request.GET.get('category', 'all')
-
-    if selected_category != 'all':
+    
+    if slug:
+        category = get_object_or_404(Category, slug=slug)
         products = Product.objects.filter(
-            category__id=selected_category, is_available=True
+            category=category, is_available=True
         ).select_related('category')
+        selected_category_id = category.id
     else:
         products = Product.objects.filter(is_available=True).select_related('category')
+        selected_category_id = 'all'
 
     return render(request, 'menu.html', {
         'categories': categories,
         'products': products,
-        'selected_category': selected_category,
+        'selected_category': selected_category_id,
     })
 
 
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk, is_available=True)
+def product_detail(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_available=True)
     related = Product.objects.filter(
         category=product.category, is_available=True
     ).exclude(pk=pk)[:4]
