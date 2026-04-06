@@ -34,6 +34,7 @@ urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', lambda r: HttpResponse("User-agent: *\nAllow: /\nSitemap: https://restoran.mirolimov.uz/sitemap.xml", content_type="text/plain")),
     
+    path('googleef6572d0f05659ed.html', lambda r: HttpResponse("google-site-verification: googleef6572d0f05659ed.html", content_type="text/html")),
     # MAXFIY ADMIN PANEL
     path('kitchen-portal/', admin_views.admin_login, name='admin_login'),
     path('kitchen-portal/logout/', admin_views.admin_logout, name='admin_logout'),

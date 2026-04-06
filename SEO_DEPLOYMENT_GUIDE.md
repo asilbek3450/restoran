@@ -13,14 +13,19 @@ Always choose **URL Prefix** if you want to verify via HTML tag or file, OR **Do
 2. Click **Add Property**.
 3. Select **Domain** and enter `restoran.mirolimov.uz`.
 
-### Step B: DNS Verification (Professional Method)
+### Step B: Verification Methods (Choose ONE)
+
+#### 1. DNS Verification (Recommended)
 1. Google will provide a **TXT record** (e.g., `google-site-verification=abc...`).
-2. Log in to your DNS provider (Cloudflare, GoDaddy, etc.) for **mirolimov.uz**.
-3. Add a new record:
+2. Add a new record in your DNS provider:
    - **Type**: `TXT`
-   - **Name**: `restoran` (or `@` if you're verifying the root, but for subdomain use `restoran`)
-   - **Value**: The TXT string from Google.
-4. Click **Verify** in GSC.
+   - **Name**: `restoran`
+   - **Value**: The TXT string.
+
+#### 2. HTML File Verification (Easiest)
+1. You already uploaded `googleef6572d0f05659ed.html`.
+2. I have configured Django to serve this at `https://restoran.mirolimov.uz/googleef6572d0f05659ed.html`.
+3. Just click **Verify** in GSC.
 
 ---
 
