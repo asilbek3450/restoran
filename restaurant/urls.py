@@ -6,6 +6,7 @@ from menu import admin_views
 from django.contrib.sitemaps.views import sitemap
 from menu.sitemaps import StaticViewSitemap, ProductSitemap, CategorySitemap
 from django.http import HttpResponse
+from django.views.generic import RedirectView
 
 sitemaps = {
     'static': StaticViewSitemap,
@@ -14,6 +15,9 @@ sitemaps = {
 }
 
 urlpatterns = [
+    # Favicon
+    path('favicon.ico', RedirectView.as_view(url='/static/images/favicon.png')),
+    
     # Asosiy sahifalar
     path('', menu_views.home, name='home'),
     path('menu/', menu_views.menu, name='menu'),
@@ -35,6 +39,7 @@ urlpatterns = [
     path('robots.txt', lambda r: HttpResponse("User-agent: *\nAllow: /\nSitemap: https://restoran.mirolimov.uz/sitemap.xml", content_type="text/plain")),
     
     path('googleef6572d0f05659ed.html', lambda r: HttpResponse("google-site-verification: googleef6572d0f05659ed.html", content_type="text/html")),
+    
     # MAXFIY ADMIN PANEL
     path('kitchen-portal/', admin_views.admin_login, name='admin_login'),
     path('kitchen-portal/logout/', admin_views.admin_logout, name='admin_logout'),
