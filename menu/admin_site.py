@@ -3,9 +3,9 @@ from django.templatetags.static import static
 from django.utils.html import format_html
 
 
-class LazzatAdminSite(AdminSite):
-    site_header = "🍴 Lazzat Restaurant"
-    site_title = "Lazzat Restaurant Admin"
+class DasturxonAdminSite(AdminSite):
+    site_header = "🍴 Dasturxon"
+    site_title = "Dasturxon Admin"
     index_title = "Boshqaruv Paneli"
 
     def each_context(self, request):

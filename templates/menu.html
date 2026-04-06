@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Menyu — Lazzat Restaurant{% endblock %}
+{% block title %}Menyu — Dasturxon{% endblock %}
 {% block nav_menu %}active{% endblock %}
 
 {% block extra_css %}
@@ -392,12 +392,12 @@
 <!-- Filter Bar -->
 <div class="filter-bar">
   <div class="filter-inner">
-    <a href="/menu/" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">
+    <a href="{% url 'menu' %}" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">
       <span>🍽️ Hammasi</span>
     </a>
     {% for cat in categories %}
-    <a href="/menu/?category={{ cat.id }}"
-      class="filter-btn {% if selected_category == cat.id|stringformat:'s' %}active{% endif %}">
+    <a href="{% url 'menu_category' slug=cat.slug %}"
+      class="filter-btn {% if selected_category == cat.id %}active{% endif %}">
       <span>{{ cat.icon }} {{ cat.name }}</span>
     </a>
     {% endfor %}

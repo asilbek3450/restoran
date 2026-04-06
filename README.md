@@ -1,4 +1,4 @@
-# Lazzat Restaurant
+# Dasturxon
 
 Django-based restaurant site with menu browsing, contact flow, table reservations, Telegram alerts, and a custom admin panel.
 

@@ -15,17 +15,17 @@
   {% block gsc_verification %}{% endblock %}
 
   <!-- SEO & Social Media Meta Tags -->
-  <meta name="description" content="Lazzat Restaurant - Toshkentdagi eng mazali va sifatli taomlar maskani. O'zbek va Yevropa taomlari, stol band qilish va menyu bilan tanishish.">
-  <meta name="keywords" content="Lazzat, Restaurant Toshkent, milliy taomlar, yevropa taomlari, bron qilish, food delivery Tashkent, restoran bron qilish">
-  <meta name="author" content="Lazzat Team">
+  <meta name="description" content="Dasturxon - Toshkentdagi eng mazali va sifatli taomlar maskani. O'zbek va Yevropa taomlari, stol band qilish va menyu bilan tanishish.">
+  <meta name="keywords" content="Dasturxon, Restaurant Toshkent, milliy taomlar, yevropa taomlari, bron qilish, food delivery Tashkent, restoran bron qilish">
+  <meta name="author" content="Dasturxon Team">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://restoran.mirolimov.uz{{ request.path }}">
   
   <!-- OpenGraph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Lazzat Restaurant">
+  <meta property="og:site_name" content="Dasturxon">
   <meta property="og:url" content="https://restoran.mirolimov.uz{{ request.path }}">
-  <meta property="og:title" content="{% block og_title %}Lazzat Restaurant — Premium Dining & Catering{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}Dasturxon — Premium Dining & Catering{% endblock %}">
   <meta property="og:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
   <meta property="og:image" content="https://restoran.mirolimov.uz/static/images/og-image.jpg">
 
@@ -33,7 +33,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@lazzat_restoran">
   <meta name="twitter:url" content="https://restoran.mirolimov.uz{{ request.path }}">
-  <meta name="twitter:title" content="Lazzat Restaurant — Premium Dining & Catering">
+  <meta name="twitter:title" content="Dasturxon — Premium Dining & Catering">
   <meta name="twitter:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
   <meta name="twitter:image" content="https://restoran.mirolimov.uz/static/images/og-image.jpg">
 
@@ -42,7 +42,7 @@
   {
     "@context": "https://schema.org",
     "@type": "Restaurant",
-    "name": "Lazzat Restaurant",
+    "name": "Dasturxon",
     "image": "https://restoran.mirolimov.uz/static/images/logo.png",
     "@id": "https://restoran.mirolimov.uz",
     "url": "https://restoran.mirolimov.uz",
@@ -76,7 +76,7 @@
     ]
   }
   </script>
-  <title>{% block title %}Lazzat Restaurant{% endblock %}</title>
+  <title>{% block title %}Dasturxon{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
@@ -985,19 +985,13 @@
 
 <body>
 
-  <!-- Page Veil Transition -->
-  <div id="pageVeil">
-    <div class="veil-bg" id="veilBg"></div>
-    <div class="veil-logo" id="veilLogo">🍴</div>
-  </div>
-
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
       <a href="/" class="nav-logo">
         <div class="logo-icon">🍴</div>
         <div class="logo-text">
-          <span class="logo-name">Lazzat</span>
+          <span class="logo-name">Dasturxon</span>
           <span class="logo-sub">Restaurant</span>
         </div>
       </a>
@@ -1049,8 +1043,8 @@
   <footer>
     <div class="footer-inner">
       <div data-anim="left">
-        <span class="footer-logo-name">🍴 Lazzat</span>
-        <p class="footer-desc">Har bir taomimizda sevgi va an'ana bor. Siz bilan bo'lishga doim tayyormiz.</p>
+        <span class="footer-logo-name">🍴 Dasturxon</span>
+        <p class="footer-desc">Har bir taomimizda sevgi va an'ana bor. Asoschimiz <strong>Asilbek Mirolimov</strong> boshchiligida sizga xizmat qilishdan mamnunmiz.</p>
         <div class="footer-contacts">
           <div class="footer-contact-item"><i class="fas fa-phone"></i><span>+998 90 123 45 67</span></div>
           <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i><span>Toshkent sh., Mustaqillik ko'chasi
@@ -1062,7 +1056,7 @@
         <div class="footer-title">Navigatsiya</div>
         <ul class="footer-links-list">
           <li><a href="/"><i class="fas fa-chevron-right"></i> Bosh sahifa</a></li>
-          <li><a href="/menu/"><i class="fas fa-chevron-right"></i> Menyu</a></li>
+          <li><a href="{% url 'menu' %}"><i class="fas fa-chevron-right"></i> Menyu</a></li>
           <li><a href="/reservation/"><i class="fas fa-chevron-right"></i> Stol bron qilish</a></li>
           <li><a href="/about/"><i class="fas fa-chevron-right"></i> Biz haqimizda</a></li>
           <li><a href="/contact/"><i class="fas fa-chevron-right"></i> Xabar qoldirish</a></li>
@@ -1071,43 +1065,18 @@
       <div data-anim="right" data-delay="3">
         <div class="footer-title">Ijtimoiy tarmoqlar</div>
         <div class="social-links">
-          <a href="https://t.me/lazzat_restaurant" class="social-link" target="_blank"><i
+          <a href="https://t.me/mirolimov_asilbek" class="social-link" target="_blank"><i
               class="fab fa-telegram"></i></a>
-          <a href="https://instagram.com/lazzat_restaurant" class="social-link" target="_blank"><i
+          <a href="https://instagram.com/mirolimov_asilbek" class="social-link" target="_blank"><i
               class="fab fa-instagram"></i></a>
           <a href="tel:+998901234567" class="social-link"><i class="fas fa-phone"></i></a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">© 2025 Lazzat Restaurant — Barcha huquqlar himoyalangan 🍴</div>
+    <div class="footer-bottom">© 2025 Dasturxon — Barcha huquqlar himoyalangan. Owner: Asilbek Mirolimov 🍴</div>
   </footer>
 
   <script>
-    /* ── PAGE VEIL TRANSITION ── */
-    const veilBg = document.getElementById('veilBg');
-    const veilLogo = document.getElementById('veilLogo');
-
-    // Kirish animatsiyasi
-    window.addEventListener('load', () => {
-      veilBg.classList.add('close');
-      veilLogo.classList.remove('open');
-    });
-
-    // Chiqish animatsiyasi
-    document.addEventListener('click', e => {
-      const a = e.target.closest('a');
-      if (!a) return;
-      const href = a.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('http') ||
-        a.target === '_blank' || a.hasAttribute('data-add-cart') ||
-        href.startsWith('javascript') || href.startsWith('tel') || href.startsWith('mailto')) return;
-      e.preventDefault();
-      veilBg.classList.remove('close');
-      veilBg.classList.add('open');
-      veilLogo.classList.add('open');
-      setTimeout(() => { window.location.href = href; }, 580);
-    });
-
     /* ── NAVBAR ── */
     const navbar = document.getElementById('navbar');
     const onScroll = () => {

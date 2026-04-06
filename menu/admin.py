@@ -79,6 +79,6 @@ class ReservationAdmin(admin.ModelAdmin):
 
 
 # Admin panel dizaynini o'zgartirish
-admin.site.site_header = "🍴 Lazzat Restaurant — Admin Panel"
-admin.site.site_title = "Lazzat Restaurant"
-admin.site.index_title = "Boshqaruv Paneli"
+admin.site.site_header = "🍴 Dasturxon — Admin Panel"
+admin.site.site_title = "Dasturxon"
+admin.site.index_title = "Dasturxon boshqaruv paneliga xush kelibsiz"
