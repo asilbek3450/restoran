@@ -17,7 +17,7 @@
   <!-- SEO & Social Media Meta Tags -->
   <meta name="description" content="Dasturxon - Toshkentdagi eng mazali va sifatli taomlar maskani. O'zbek va Yevropa taomlari, stol band qilish va menyu bilan tanishish.">
   <meta name="keywords" content="Dasturxon, Restaurant Toshkent, milliy taomlar, yevropa taomlari, bron qilish, food delivery Tashkent, restoran bron qilish">
-  <meta name="author" content="Dasturxon Team">
+  <meta name="author" content="Asilbek Mirolimov">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://restoran.mirolimov.uz{{ request.path }}">
   
@@ -26,15 +26,15 @@
   <meta property="og:site_name" content="Dasturxon">
   <meta property="og:url" content="https://restoran.mirolimov.uz{{ request.path }}">
   <meta property="og:title" content="{% block og_title %}Dasturxon — Premium Dining & Catering{% endblock %}">
-  <meta property="og:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
+  <meta property="og:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas ta'mdan bahramand bo'ling.">
   <meta property="og:image" content="https://restoran.mirolimov.uz/static/images/og-image.jpg">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@lazzat_restoran">
+  <meta name="twitter:site" content="@dasturxon_uz">
   <meta name="twitter:url" content="https://restoran.mirolimov.uz{{ request.path }}">
   <meta name="twitter:title" content="Dasturxon — Premium Dining & Catering">
-  <meta name="twitter:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas lazzatdan bahramand bo'ling.">
+  <meta name="twitter:description" content="Har bir taomimizda sevgi va an'ana bor. Bizga tashrif buyuring va unutilmas ta'mdan bahramand bo'ling.">
   <meta name="twitter:image" content="https://restoran.mirolimov.uz/static/images/og-image.jpg">
 
   <!-- Structured Data (Schema.org) for Restaurant -->
@@ -71,8 +71,8 @@
       "closes": "23:00"
     },
     "sameAs": [
-      "https://t.me/lazzat_restaurant",
-      "https://instagram.com/lazzat_restaurant"
+      "https://t.me/mirolimov_asilbek",
+      "https://instagram.com/mirolimov_asilbek"
     ]
   }
   </script>
@@ -1095,16 +1095,16 @@
     }
 
     /* ── SCROLL REVEAL ── */
-    const revealObs = new IntersectionObserver(entries => {
+    window.revealObs = new IntersectionObserver(entries => {
       entries.forEach(en => {
         if (en.isIntersecting) {
           en.target.classList.add('animated');
-          revealObs.unobserve(en.target);
+          window.revealObs.unobserve(en.target);
         }
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    document.querySelectorAll('[data-anim]').forEach(el => revealObs.observe(el));
+    document.querySelectorAll('[data-anim]').forEach(el => window.revealObs.observe(el));
 
     /* ── ALERTS AUTO-HIDE ── */
     document.querySelectorAll('.alert').forEach((el, i) => {

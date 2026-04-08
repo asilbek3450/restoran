@@ -38,7 +38,7 @@ def admin_login(request):
         password = request.POST.get('password', '').strip()
         from django.conf import settings
         admin_user = getattr(settings, 'KITCHEN_ADMIN_USER', 'admin')
-        admin_pass = getattr(settings, 'KITCHEN_ADMIN_PASS', 'lazzat2025')
+        admin_pass = getattr(settings, 'KITCHEN_ADMIN_PASS', 'dasturxon2025')
         if username == admin_user and password == admin_pass:
             request.session['is_kitchen_admin'] = True
             request.session['admin_username'] = username

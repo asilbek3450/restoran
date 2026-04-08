@@ -28,7 +28,11 @@ def menu(request, slug=None):
         products = Product.objects.filter(is_available=True).select_related('category')
         selected_category_id = 'all'
 
-    return render(request, 'menu.html', {
+    template_name = 'menu.html'
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        template_name = 'partials/menu_grid.html'
+
+    return render(request, template_name, {
         'categories': categories,
         'products': products,
         'selected_category': selected_category_id,

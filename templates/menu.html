@@ -313,6 +313,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    line-clamp: 2;
     overflow: hidden;
   }
 
@@ -407,78 +408,9 @@
 <section class="menu-section">
   <div class="menu-container">
 
-    {% if selected_category == 'all' %}
-    {% regroup products by category as category_list %}
-    {% for group in category_list %}
-    <div class="category-section" data-anim="up" data-delay="{{ forloop.counter }}">
-      <div class="category-header">
-        <div class="category-icon-wrap">{{ group.grouper.icon }}</div>
-        <div>
-          <div class="cat-name">{{ group.grouper.name }}</div>
-          <div class="cat-count">{{ group.list|length }} ta mahsulot</div>
-        </div>
-      </div>
-      <div class="products-grid">
-        {% for product in group.list %}
-        <div class="product-card" data-anim="scale" data-delay="{{ forloop.counter }}">
-          {% if product.is_popular %}<div class="product-badge">🔥 Popular</div>{% endif %}
-          <a href="/product/{{ product.pk }}/">
-            <div class="product-img-wrap">
-              {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
-              {% else %}<div class="product-img-placeholder">{{ product.category.icon }}</div>{% endif %}
-            </div>
-          </a>
-          <div class="product-body">
-            <a href="/product/{{ product.pk }}/" class="product-name">{{ product.name }}</a>
-            {% if product.description %}<p class="product-desc">{{ product.description }}</p>{% endif %}
-            <div class="product-footer">
-              <div class="product-price">{{ product.formatted_price }} <span class="price-sub">so'm</span></div>
-              <a href="/cart/add/{{ product.pk }}/" class="btn-cart" data-add-cart="/cart/add/{{ product.pk }}/">🛒
-                Qo'sh</a>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
+    <div id="categoryGrid" style="transition: opacity 0.4s ease;">
+      {% include 'partials/menu_grid.html' %}
     </div>
-    {% empty %}
-    <div class="empty-state" data-anim="scale">
-      <span class="icon">🍽️</span>
-      <h3>Hozircha mahsulotlar yo'q</h3>
-      <p>Admin paneldan mahsulotlar qo'shing</p>
-    </div>
-    {% endfor %}
-
-    {% else %}
-    <div class="products-grid">
-      {% for product in products %}
-      <div class="product-card" data-anim="scale" data-delay="{{ forloop.counter }}">
-        {% if product.is_popular %}<div class="product-badge">🔥 Popular</div>{% endif %}
-        <a href="/product/{{ product.pk }}/">
-          <div class="product-img-wrap">
-            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
-            {% else %}<div class="product-img-placeholder">{{ product.category.icon }}</div>{% endif %}
-          </div>
-        </a>
-        <div class="product-body">
-          <a href="/product/{{ product.pk }}/" class="product-name">{{ product.name }}</a>
-          {% if product.description %}<p class="product-desc">{{ product.description }}</p>{% endif %}
-          <div class="product-footer">
-            <div class="product-price">{{ product.formatted_price }} <span class="price-sub">so'm</span></div>
-            <a href="/cart/add/{{ product.pk }}/" class="btn-cart" data-add-cart="/cart/add/{{ product.pk }}/">🛒
-              Qo'sh</a>
-          </div>
-        </div>
-      </div>
-      {% empty %}
-      <div style="grid-column:1/-1;" class="empty-state" data-anim="scale">
-        <span class="icon">🔍</span>
-        <h3>Bu kategoriyada mahsulot yo'q</h3>
-        <p>Boshqa kategoriyani tanlang</p>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
   </div>
 </section>
 {% endblock %}
@@ -503,5 +435,55 @@
       c.appendChild(el);
     }
   })();
+
+  // ── AJAX MENU FILTERING ──
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const grid = document.getElementById('categoryGrid');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const url = btn.getAttribute('href');
+        
+        // Active state update
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Smooth transition: Fade out
+        grid.style.opacity = '0';
+        grid.style.transform = 'translateY(10px)';
+
+        setTimeout(() => {
+          fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(res => res.text())
+            .then(html => {
+              grid.innerHTML = html;
+              
+              // Update URL & History
+              history.pushState(null, '', url);
+
+              // Smooth transition: Fade in
+              grid.style.opacity = '1';
+              grid.style.transform = 'translateY(0)';
+
+              // Re-run scroll reveal for new products
+              if (window.revealObs) {
+                grid.querySelectorAll('[data-anim]').forEach(el => window.revealObs.observe(el));
+              }
+            })
+            .catch(err => {
+              console.error('Filtering error:', err);
+              window.location.href = url; // Fallback
+            });
+        }, 300);
+      });
+    });
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', () => {
+      window.location.reload(); 
+    });
+  });
 </script>
 {% endblock %}

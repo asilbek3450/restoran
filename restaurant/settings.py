@@ -175,7 +175,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Admin panel credentials
 KITCHEN_ADMIN_USER = os.getenv('KITCHEN_ADMIN_USER', 'admin')
-KITCHEN_ADMIN_PASS = os.getenv('KITCHEN_ADMIN_PASS', 'lazzat2025')
+KITCHEN_ADMIN_PASS = os.getenv('KITCHEN_ADMIN_PASS', 'dasturxon2025')
 
 
 # Telegram bot settings
